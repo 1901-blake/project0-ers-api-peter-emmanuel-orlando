@@ -1,7 +1,7 @@
 import express from 'express';
 import { Reimbursement , getReimbursementsWithStatus, getReimbursementsWithUserID, addNewReimbursement, getReimbursementbyID, updateReimbursement } from '../models/Reimbursement';
 import { User } from '../models/User';
-import { updateWith } from 'src/utils';
+import { updateWith } from '../utils';
 
 // all routes defined with this router start with '/users'
 export const reimbursmentsRouter = express.Router();
