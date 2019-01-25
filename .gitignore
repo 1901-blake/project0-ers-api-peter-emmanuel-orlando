@@ -1,3 +1,5 @@
+*.ignored.ts
+
 # Logs
 logs
 *.log
