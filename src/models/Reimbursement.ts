@@ -1,6 +1,8 @@
 import { checkUserExists } from "./User";
 import { isValidReimbursementStatus } from "./ReimbursementStatus";
 import { isValidReimbursementType } from "./ReimbursementType";
+import { QueryResult } from "pg";
+import { talkToDB } from "../dbGoBetween";
 
 // **Reimbursement**  
 // The Reimbursement model is used to represent a single reimbursement that an employee would submit
@@ -65,26 +67,40 @@ export function getReimbursementbyID( reimbursementId: Number): Reimbursement
     return result;
 }
 
-export function addNewReimbursement( newReimbursement: Reimbursement): boolean
-{
-    let result = isValidReimbursement(newReimbursement);
-    newReimbursement.reimbursementId = 0;
-    //must set reimbursment id to 0 so it doesnt collide with anything in the database
-    if(result)
+export function InsertOrUpdateReimbursementInDB( reimbursement: Reimbursement, callback:(err: Error, result: QueryResult) => void)
+{       
+    if(isValidReimbursement(reimbursement))
     {
-        //todo
+        if(getReimbursementbyID(reimbursement.reimbursementId))//it exists in db
+            updateReimbursementInDB(reimbursement, callback);
+        else 
+            insertReimbursementInDB(reimbursement, callback);
     }
-    return result;
+    else
+    {
+        let errStr = 'reinbursment is not valid. Check that all the fields are properly initialized, especially values that shouldnt be null'
+        callback(Error(errStr), undefined);
+    }
 }
 
-export function updateReimbursement( newReimbursement: Reimbursement): boolean
-{    
-    let result: boolean = isValidReimbursement(newReimbursement) && !!getReimbursementbyID(newReimbursement.reimbursementId);
-    if(result)
-    {
-        //todo
-    }
-    return result;
+function insertReimbursementInDB( reimbursement: Reimbursement, callback:(err: Error, result: QueryResult) => void)
+{
+    //must set reimbursment id to 0 so it doesnt collide with anything in the database
+    reimbursement.reimbursementId = 0;
+ 
+    let command = `INSERT INTO reimbursements( reimbursementId, author, amount, dateSubmitted, dateResolved, description, resolver, status, type )
+    VALUES (${reimbursement.reimbursementId}, ${reimbursement.author}, ${reimbursement.amount}, ${reimbursement.dateSubmitted}, ${reimbursement.dateResolved}, ${reimbursement.description}, ${reimbursement.resolver}, ${reimbursement.status}, ${reimbursement.type})`;
+
+    talkToDB(command, callback);
+}
+
+function updateReimbursementInDB( reimbursement: Reimbursement, callback:(err: Error, result: QueryResult) => void)
+{
+    let command =
+    `UPDATE reimbursements
+    SET reimbursementId = ${reimbursement.reimbursementId}, author = ${reimbursement.author}, amount = ${reimbursement.amount}, dateSubmitted = ${reimbursement.dateSubmitted}, dateResolved = ${reimbursement.dateResolved}, description = ${reimbursement.description}, resolver = ${reimbursement.resolver}, status = ${reimbursement.status}, type = ${reimbursement.type}
+    WHERE condition`
+    talkToDB(command, callback);
 }
 
 export function isValidReimbursement(obj: any): boolean

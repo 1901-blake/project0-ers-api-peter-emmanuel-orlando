@@ -1,5 +1,5 @@
 import express from 'express';
-import { Reimbursement , getReimbursementsWithStatus, getReimbursementsWithUserID, addNewReimbursement, getReimbursementbyID, updateReimbursement } from '../models/Reimbursement';
+import { Reimbursement , getReimbursementsWithStatus, getReimbursementsWithUserID, addNewReimbursement, getReimbursementbyID, updateReimbursementInDB } from '../models/Reimbursement';
 import { User } from '../models/User';
 import { updateWith } from '../utils';
 
@@ -65,7 +65,7 @@ reimbursmentsRouter.patch('', (req, res) =>{
             result = updateWith<Reimbursement>(result, updatesToReimbursement);
         }
         //send result back to db
-        updateReimbursement(result);
+        updateReimbursementInDB(result);
         //send back response        
         res.status(statusCode).json(result);        
     }

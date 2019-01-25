@@ -9,8 +9,10 @@ export default usersRouter;
 usersRouter.get('', (req, res) =>{
     let accessingUser: User = req.session.user;
     if(accessingUser.role.role === 'finance-manager'){
-        let allUsers = getAllUsers();
-        res.status(200).json(allUsers);
+        getAllUsers((err, response) =>
+        {
+            res.status(200).json(response.rows);
+        });
     }
 });
 
