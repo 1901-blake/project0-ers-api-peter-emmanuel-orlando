@@ -1,4 +1,6 @@
 import { Role } from "./Role";
+import { talkToDB } from "../dbGoBetween";
+import { QueryResult } from "pg";
 
 // **User**  
 // The User model keeps track of users information.
@@ -58,8 +60,9 @@ export class User
 
 }
 
-export function getAllUsers(): User[]{
+export function getAllUsers(callback:(err: Error, result: QueryResult) => void){
     let result: User[] = [];
+    talkToDB( 'select * from users',function(err, res){} )
     //get all users from database
     return result;
 }
