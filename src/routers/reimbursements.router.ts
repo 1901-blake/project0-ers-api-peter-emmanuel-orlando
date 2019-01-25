@@ -1,5 +1,5 @@
 import express from 'express';
-import { Reimbursement , getReimbursementsWithStatus, getReimbursementsWithUserID } from '../models/Reimbursement';
+import { Reimbursement , getReimbursementsWithStatus, getReimbursementsWithUserID, addNewReimbursement } from '../models/Reimbursement';
 import { User } from '../models/User';
 
 // all routes defined with this router start with '/users'
@@ -34,31 +34,18 @@ reimbursmentsRouter.get('/author/userId/:userId', (req, res) =>{
 reimbursmentsRouter.post('', (req, res) =>{
     let accessingUser: User = req.session.user;
     let newReimbursement: Reimbursement = req.body;
+    let statusResult = 201;
     //if Reimbursement author id doesnt match the userId or the user isnt administrator, return error
-    //set objectid to 0 before sending to db
-
-    if(accessingUser.role.role === 'finance-manager'){
-        //get updates
-        let updatesToUser: User = req.body;
-        //fetch user
-        let result: User = getUserById(updatesToUser.userId);
-        //set variaable with status code
-        let statusCode = 400;
-        //update user with new val if current user is found
-        if(result)
-        {
-            statusCode = 200;
-            for (const key in Object.keys(updatesToUser)) {
-                if (key) {
-                    result[key] = updatesToUser[key];                
-                }
-            }
-        }
-        //send user back to db
-        setOrReplaceUser(result);
-        //send back response        
-        res.status(statusCode).json(result);        
+    if(accessingUser.role.role === 'finance-manager' || accessingUser.userId === newReimbursement.author)
+    {
+        //set objectid to 0 before sending to db  
+        newReimbursement.reimbursementId = 0;
+        //send to db
+        if(!addNewReimbursement(newReimbursement)) statusResult = 400;
     }
+    else {statusResult = 403};  
+      
+    res.sendStatus(statusResult);
 })
 
 

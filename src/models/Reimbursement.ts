@@ -58,6 +58,16 @@ export function getReimbursementsWithUserID( userId: Number, startdate: string =
     return result;
 }
 
+export function addNewReimbursement( newReimbursement: Reimbursement): boolean
+{
+    let result = isValidReimbursement(newReimbursement);
+    if(result)
+    {
+        //todo
+    }
+    return result;
+}
+
 export function isValidReimbursement(obj: any): boolean
 {
     var result: boolean = true;
