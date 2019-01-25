@@ -59,35 +59,3 @@ export class User
     }
 
 }
-
-export function getAllUsers(callback:(err: Error, result: QueryResult) => void){
-    //get all users from database
-    talkToDB( 'select * from users',function(err, res){} );
-}
-
-export function getUserByCredentials (username: string, password: string)
-{
-    var result;
-    let s = `select * from users where username = ${username} and password = ${password}`
-    return result;
-}
-
-export function getUserById (userId: number): User
-{
-    var result;
-    `select * from users where userId = ${userId}`;
-    return result;
-}
-
-export function updateUserInDB (user: User)
-{
-    //nullcheck
-    // TODO
-}
-
-export function checkUserExists(id: number): boolean
-{
-    let result: boolean;
-    // TODO
-    return result;
-}
