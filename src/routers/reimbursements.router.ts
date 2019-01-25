@@ -35,6 +35,7 @@ reimbursmentsRouter.post('', (req, res) =>{
     let accessingUser: User = req.session.user;
     let newReimbursement: Reimbursement = req.body;
     //if Reimbursement author id doesnt match the userId or the user isnt administrator, return error
+    //set objectid to 0 before sending to db
 
     if(accessingUser.role.role === 'finance-manager'){
         //get updates

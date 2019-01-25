@@ -17,3 +17,8 @@ export class ReimbursementStatus
         this.status = status;// not null, unique      
     }
 }
+export function isValidReimbursementStatus(statusId: number): boolean
+{
+    var result: boolean = false;
+    return result;
+}

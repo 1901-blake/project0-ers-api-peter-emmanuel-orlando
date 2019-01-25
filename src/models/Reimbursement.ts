@@ -1,3 +1,7 @@
+import { checkUserExists } from "./User";
+import { isValidReimbursementStatus } from "./ReimbursementStatus";
+import { isValidReimbursementType } from "./ReimbursementType";
+
 // **Reimbursement**  
 // The Reimbursement model is used to represent a single reimbursement that an employee would submit
 // ```javascript
@@ -54,12 +58,31 @@ export function getReimbursementsWithUserID( userId: Number, startdate: string =
     return result;
 }
 
-export function isValidReimbursement(objectToCheck: any): boolean
+export function isValidReimbursement(obj: any): boolean
 {
     var result: boolean = true;
-    //check that the fields that shouldnt be null arnt null
-    //check resolver, status, and 
-    //set objectid to 0
+    result = result && 
+        //check that obj isnt null
+        obj &&
+        //check that the fields are the correct type and the feilds that shouldnt be null arnt null
+        typeof(obj.reimbursementId) === 'number' &&//cant check null normally because zero equates to false
+        typeof(obj.author) === 'number' && // foreign key -> User, not null
+        typeof(obj.amount) === 'number' &&  // not null
+        typeof(obj.dateSubmitted) === 'number' && // not null
+        typeof(obj.dateResolved) === 'number' && // not null
+        typeof(obj.description) === 'string' && // not null
+        (typeof(obj.resolver) === 'number' || typeof(obj.resolver) === 'undefined' || !obj.resolver) && // foreign key -> User
+        typeof(obj.status) === 'number' && // foreign ey -> ReimbursementStatus, not null
+        typeof(obj.type) === 'number' // foreign key -> ReimbursementType    
+        //check author is a real user
+        checkUserExists(obj.author) &&
+        //check resolver is either undefined, null or a real user
+        (!obj.resolver || typeof(obj.resolver) === 'undefined' || checkUserExists(obj.resolver)) && //may break where resolver === 0
+        //check dateSubmitted is before current date
+        obj.dateSubmitted <= Date.UTC &&
+        //check status and type are real
+        isValidReimbursementStatus(obj.status) &&
+        isValidReimbursementType(obj.type);
     return result;
 }
 

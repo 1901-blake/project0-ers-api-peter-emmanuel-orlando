@@ -81,6 +81,12 @@ export function getUserById (id: number): User
 export function setOrReplaceUser (user: User)
 {
     //nullcheck
-    var result;
     // TODO
+}
+
+export function checkUserExists(id: number): boolean
+{
+    let result: boolean;
+    // TODO
+    return result;
 }
