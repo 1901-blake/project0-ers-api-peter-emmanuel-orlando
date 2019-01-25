@@ -9,22 +9,9 @@ export default authMiddleware;
 // if there is no user, or if the user on the session is equal to the one fetched from the database, fall through. 
 // if there is a user, check that the user matches the one from the database in ALL fields, 
 //      else set the session user to undefined. then fall through
-
-authMiddleware.post('/login', (req, res) => {
-    if (req.body.username === 'blake' && req.body.password === 'password') {
-        req.session.role = 'admin';
-        res.json(
-        {
-            username: req.body.username,
-            role: 'admin'
-        });
-    }
-    else
-        res.sendStatus(403);
-});
 */
 
-authMiddleware.get('', (req, res, next) =>{
+authMiddleware.use('', (req, res, next) =>{
     //get the user and get the matching user from the database
     let accessingUser: User = req.session.user;
     let matchingUser: User = accessingUser && getUserById(accessingUser.userId);

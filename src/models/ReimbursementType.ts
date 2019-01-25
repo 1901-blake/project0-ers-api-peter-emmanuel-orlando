@@ -17,3 +17,9 @@ export class ReimbursementType
         this.type = type;// not null, unique      
     }
 }
+
+export function isValidReimbursementType(typeId: number): boolean
+{
+    var result: boolean = false;
+    return result;
+}

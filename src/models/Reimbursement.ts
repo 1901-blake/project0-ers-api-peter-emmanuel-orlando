@@ -46,3 +46,21 @@ export function getReimbursementsWithStatus( statusId: Number, startdate: string
 
     return result;
 }
+
+export function getReimbursementsWithUserID( userId: Number, startdate: string = undefined, enddate: string = undefined): Reimbursement[]
+{
+    let result: Reimbursement[] = [];
+
+    return result;
+}
+
+export function isValidReimbursement(objectToCheck: any): boolean
+{
+    var result: boolean = true;
+    //check that the fields that shouldnt be null arnt null
+    //check resolver, status, and 
+    //set objectid to 0
+    return result;
+}
+
+
