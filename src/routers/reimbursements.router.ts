@@ -1,6 +1,7 @@
 import express from 'express';
-import { Reimbursement , getReimbursementsWithStatus, getReimbursementsWithUserID, addNewReimbursement } from '../models/Reimbursement';
+import { Reimbursement , getReimbursementsWithStatus, getReimbursementsWithUserID, addNewReimbursement, getReimbursementbyID, updateReimbursement } from '../models/Reimbursement';
 import { User } from '../models/User';
+import { updateWith } from 'src/utils';
 
 // all routes defined with this router start with '/users'
 export const reimbursmentsRouter = express.Router();
@@ -44,9 +45,31 @@ reimbursmentsRouter.post('', (req, res) =>{
         if(!addNewReimbursement(newReimbursement)) statusResult = 400;
     }
     else {statusResult = 403};  
-      
+
     res.sendStatus(statusResult);
-})
+});
+
+reimbursmentsRouter.patch('', (req, res) =>{
+    let accessingUser: User = req.session.user;
+    if(accessingUser.role.role === 'finance-manager'){
+        //get updates
+        let updatesToReimbursement: Reimbursement = req.body;
+        //fetch current Reimbursement
+        let result: Reimbursement = getReimbursementbyID(updatesToReimbursement.reimbursementId);
+        //set variaable with status code
+        let statusCode = 400;
+        //update result with new val if current user is found
+        if(result)
+        {
+            statusCode = 200;
+            result = updateWith<Reimbursement>(result, updatesToReimbursement);
+        }
+        //send result back to db
+        updateReimbursement(result);
+        //send back response        
+        res.status(statusCode).json(result);        
+    }
+});
 
 
 

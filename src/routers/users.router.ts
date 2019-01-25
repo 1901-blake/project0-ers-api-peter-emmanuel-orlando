@@ -1,5 +1,6 @@
 import express from 'express';
 import { User, getAllUsers, getUserById, setOrReplaceUser } from '../models/user';
+import { updateWith } from '../utils';
 
 // all routes defined with this router start with '/users'
 export const usersRouter = express.Router();
@@ -11,7 +12,7 @@ usersRouter.get('', (req, res) =>{
         let allUsers = getAllUsers();
         res.status(200).json(allUsers);
     }
-})
+});
 
 usersRouter.patch('', (req, res) =>{
     let accessingUser: User = req.session.user;
@@ -26,18 +27,14 @@ usersRouter.patch('', (req, res) =>{
         if(result)
         {
             statusCode = 200;
-            for (const key in Object.keys(updatesToUser)) {
-                if (key) {
-                    result[key] = updatesToUser[key];                
-                }
-            }
+            result = updateWith<User>(result, updatesToUser);
         }
         //send user back to db
         setOrReplaceUser(result);
         //send back response        
         res.status(statusCode).json(result);        
     }
-})
+});
 
 usersRouter.get('/:id', (req, res) =>{
     let accessingUser: User = req.session.user;

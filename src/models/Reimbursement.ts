@@ -58,9 +58,28 @@ export function getReimbursementsWithUserID( userId: Number, startdate: string =
     return result;
 }
 
+export function getReimbursementbyID( reimbursementId: Number): Reimbursement
+{
+    let result: Reimbursement = null;
+
+    return result;
+}
+
 export function addNewReimbursement( newReimbursement: Reimbursement): boolean
 {
     let result = isValidReimbursement(newReimbursement);
+    newReimbursement.reimbursementId = 0;
+    //must set reimbursment id to 0 so it doesnt collide with anything in the database
+    if(result)
+    {
+        //todo
+    }
+    return result;
+}
+
+export function updateReimbursement( newReimbursement: Reimbursement): boolean
+{    
+    let result: boolean = isValidReimbursement(newReimbursement) && !!getReimbursementbyID(newReimbursement.reimbursementId);
     if(result)
     {
         //todo
