@@ -1,10 +1,11 @@
 import { Pool, Client } from "pg";
+import { getSuperSecretPassword } from "./superNormalFile.ignored";
 
 const pool = new Pool({
-    user: 'dbuser',
+    user: 'p0670083130',
     host: 'database.server.com',
     database: 'mydb',
-    password: 'secretpassword',
+    password: getSuperSecretPassword(),
     port: 3211,
   })
 

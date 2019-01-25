@@ -1,4 +1,4 @@
-*.ignored.ts
+*.ignored.*
 
 # Logs
 logs
