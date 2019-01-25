@@ -6,6 +6,8 @@
 //   status: string // not null, unique
 // }
 // ```
+import pg from 'pg';
+
 export class ReimbursementStatus
 {    
     statusId: number; // primary key
@@ -20,5 +22,13 @@ export class ReimbursementStatus
 export function isValidReimbursementStatus(statusId: number): boolean
 {
     var result: boolean = false;
+    
+    const client = new pg.Client()
+    client.connect()
+    client.query('SELECT $1::text as name', ['brianc'], (err, res) => {
+        if (err) throw err
+        console.log(res)
+        client.end()
+    })
     return result;
 }
