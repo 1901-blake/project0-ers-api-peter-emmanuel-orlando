@@ -1,5 +1,5 @@
 import { User } from "../models/User";
-import { talkToDB } from "../dbGoBetween";
+import { talkToDB } from "./dbGoBetween";
 
 export function getAllUsers(callback:(err: Error, result: QueryResult) => void){
     //get all users from database

@@ -11,6 +11,7 @@ loginRouter.post('', (req, res) => {
     if (fetchedUser) {
         //handle session here. Attaches the entire user object to it for ease of access        
         req.session.user = fetchedUser;
+        req.session.isAdmin = fetchedUser.role.role === 'finance-manager';
         res.json( fetchedUser );
     }
     else

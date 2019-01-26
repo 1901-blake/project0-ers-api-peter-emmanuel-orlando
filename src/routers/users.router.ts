@@ -1,6 +1,7 @@
 import express from 'express';
-import { User, getAllUsers, getUserById, setOrReplaceUser } from '../models/user';
+import { User} from '../models/user';
 import { updateWith } from '../utils';
+import { getAllUsers, getUserById } from '../data-access-objects/user.dao';
 
 // all routes defined with this router start with '/users'
 export const usersRouter = express.Router();
@@ -15,6 +16,7 @@ usersRouter.get('', (req, res) =>{
         });
     }
 });
+
 
 usersRouter.patch('', (req, res) =>{
     let accessingUser: User = req.session.user;

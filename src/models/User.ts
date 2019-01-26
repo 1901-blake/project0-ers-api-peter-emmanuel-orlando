@@ -1,5 +1,5 @@
 import { Role } from "./Role";
-import { talkToDB } from "../dbGoBetween";
+import { talkToDB } from "../data-access-objects/dbGoBetween";
 import { QueryResult } from "pg";
 
 // **User**  

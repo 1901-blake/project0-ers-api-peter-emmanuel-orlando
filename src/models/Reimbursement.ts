@@ -2,7 +2,7 @@ import { checkUserExists } from "./User";
 import { isValidReimbursementStatus } from "./ReimbursementStatus";
 import { isValidReimbursementType } from "./ReimbursementType";
 import { QueryResult } from "pg";
-import { talkToDB } from "../dbGoBetween";
+import { talkToDB } from "../data-access-objects/dbGoBetween";
 
 // **Reimbursement**  
 // The Reimbursement model is used to represent a single reimbursement that an employee would submit
