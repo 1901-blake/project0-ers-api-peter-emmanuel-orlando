@@ -1,38 +1,48 @@
-import { talkToDB, endDBConnection} from "./dbGoBetween";
-import { Reimbursement } from "../models/Reimbursement";
-import { Pool, QueryResult } from "pg";
-
-export async function getReimbursementsWithStatus( statusId: Number, startdate: string = undefined, enddate: string = undefined): Promise<Reimbursement[]>
-{
-    let result: Reimbursement[] = undefined;
-    let command = `SELECT * FROM reimbursments WHERE statusId = ${statusId}`;
-    if(startdate && enddate) 
-        command += `AND startdate >= ${startdate} AND enddate >= ${enddate}`;
-    await talkToDB(command).then((res,) => {result = res.rows;},
-        (reason)=>{let tmp: Promise<QueryResult> = null; return tmp;});
-    console.log('butts')
-    return result;
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const dbGoBetween_1 = require("./dbGoBetween");
+function getReimbursementsWithStatus(statusId, startdate = undefined, enddate = undefined) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let result = undefined;
+        let command = `SELECT * FROM reimbursments WHERE statusId = ${statusId}`;
+        if (startdate && enddate)
+            command += `AND startdate >= ${startdate} AND enddate >= ${enddate}`;
+        yield dbGoBetween_1.talkToDB(command).then((res) => {
+            result = res.rows;
+        }, (reason) => {
+            throw new Error();
+        });
+        console.log('butts');
+        return result;
+    });
 }
-
-export function foo()
-{
-    getReimbursementsWithStatus(0).then((res)=>{console.log(res);}).catch((err)=>{console.log(err)});
+exports.getReimbursementsWithStatus = getReimbursementsWithStatus;
+function foo() {
+    getReimbursementsWithStatus(0).then((res) => { console.log(res); }).catch((err) => { console.log(err); });
     console.log('hey');
-    endDBConnection().then(()=>{'hello'});
+    dbGoBetween_1.endDBConnection().then(() => {
+        'hello';
+    });
 }
-foo();
-
-export async function getReimbursementsWithUserID( userId: Number, startdate: string = undefined, enddate: string = undefined): Promise<Reimbursement[]>
-{
-    let result: Promise<Reimbursement[]> = undefined;
-    let command = `SELECT * FROM reimbursments WHERE statusId = ${userId}`;
-    if(startdate && enddate) 
-        command += `AND startdate >= ${startdate} AND enddate >= ${enddate}`;
-
-    return result;
+exports.foo = foo;
+function getReimbursementsWithUserID(userId, startdate = undefined, enddate = undefined) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let result = undefined;
+        let command = `SELECT * FROM reimbursments WHERE statusId = ${userId}`;
+        if (startdate && enddate)
+            command += `AND startdate >= ${startdate} AND enddate >= ${enddate}`;
+        return result;
+    });
 }
-
-
+exports.getReimbursementsWithUserID = getReimbursementsWithUserID;
 /*
 export function getReimbursementbyID( reimbursementId: Number, callback:(err: Error, result: QueryResult) => void)
 {
@@ -44,7 +54,7 @@ export function getReimbursementbyID( reimbursementId: Number, callback:(err: Er
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 export function InsertOrUpdateReimbursementInDB( reimbursement: Reimbursement, callback:(err: Error, result: QueryResult) => void)
-{       
+{
     if(isValidReimbursement(reimbursement))
     {
         getReimbursementbyID(reimbursement.reimbursementId, (err, res) =>{
@@ -81,4 +91,5 @@ function updateReimbursementInDB( reimbursement: Reimbursement, callback:(err: E
     talkToDB(command, callback);
 }
 
-*/
+*/ 
+//# sourceMappingURL=reimbursment.dao.js.map

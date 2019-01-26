@@ -13,26 +13,26 @@ const pool = new Pool({
 //either this or create a singleton to get the pool
   
 /**
- * function to talk to the database when performing multiple queries
- * returns a function that needs to be called to close the connection
+ * Function to talk to the database when performing multiple queries. 
+ * Returns a function that needs to be called to close the connection.
+ * endDBConnection can also be called
  * @param sqlCommand command to be run on the sql database
  * @param callback gives the error and the result
  */
-export function openTalkToDB( sqlCommand: string, callback:(err: Error, result: QueryResult) => void): ()=>void
+export function multiTalkToDB( sqlCommand: string, callback:(err: Error, result: QueryResult) => void): ()=>void
 {
     let result: QueryResult = undefined;
 
     pool.query(sqlCommand, (err, res) => {
         //console.log(err, res);
         callback(err, res);
-        pool.end();
     })
     return ()=>{pool.end;};
 } 
 
 /**
- * function to talk to the database when performing single query
- * returns a promise that holds the QueryResult from the database
+ * function to talk to the database when performing single query. 
+ * Returns a promise that holds the QueryResult from the database
  * @param sqlCommand command to be run on the sql database
  */
 export async function talkToDB( sqlCommand: string): Promise<QueryResult>
@@ -41,11 +41,15 @@ export async function talkToDB( sqlCommand: string): Promise<QueryResult>
 
     const client = await pool.connect();
     result = client.query(sqlCommand);
-
     return result;
 }
 
 
+export async function endDBConnection(): Promise<void>
+{
+    return pool.end()
+}
 
 
-talkToDB('select * from customer').then((res) =>{ console.log(res)}).catch((err)=>{console.error(err);});
+
+//talkToDB('select * from customer').then((res) =>{ console.log(res)}).catch((err)=>{console.error(err);});
