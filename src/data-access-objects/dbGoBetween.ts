@@ -1,4 +1,4 @@
-import { Pool, Client, QueryResult } from "pg";
+import { Pool, Client, PoolClient, QueryResult } from "pg";
 import { getSuperSecretPassword } from "../superNormalFile.ignored";
 
 
@@ -37,10 +37,14 @@ export function multiTalkToDB( sqlCommand: string, callback:(err: Error, result:
  */
 export async function talkToDB( sqlCommand: string): Promise<QueryResult>
 {
-    let result: Promise<QueryResult> = undefined;
+    let result: QueryResult = undefined;
 
-    const client = await pool.connect();
-    result = client.query(sqlCommand);
+    const client = <PoolClient> (await pool.connect().catch((e)=>{console.log(e);}));
+    if (client.query !== undefined) 
+    {
+        result = <QueryResult>(await client.query(sqlCommand).catch((e)=>{console.log(e);}));
+        client.release();        
+    } 
     return result;
 }
 

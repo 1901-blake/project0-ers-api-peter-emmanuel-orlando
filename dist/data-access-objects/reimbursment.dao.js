@@ -15,24 +15,21 @@ function getReimbursementsWithStatus(statusId, startdate = undefined, enddate = 
         let command = `SELECT * FROM reimbursments WHERE statusId = ${statusId}`;
         if (startdate && enddate)
             command += `AND startdate >= ${startdate} AND enddate >= ${enddate}`;
-        yield dbGoBetween_1.talkToDB(command).then((res) => {
-            result = res.rows;
-        }, (reason) => {
-            throw new Error();
-        });
+        var p = yield dbGoBetween_1.talkToDB(command).then((res) => { result = res.rows; }, (reason) => { let tmp = null; return tmp; });
         console.log('butts');
-        return result;
+        return [];
     });
 }
 exports.getReimbursementsWithStatus = getReimbursementsWithStatus;
 function foo() {
-    getReimbursementsWithStatus(0).then((res) => { console.log(res); }).catch((err) => { console.log(err); });
+    var g = getReimbursementsWithStatus(0).then(() => { }).catch(() => { return Promise.resolve(); });
+    let arr = ['j'];
+    arr.forEach(() => { console.log('hello'); });
     console.log('hey');
-    dbGoBetween_1.endDBConnection().then(() => {
-        'hello';
-    });
+    dbGoBetween_1.endDBConnection();
 }
 exports.foo = foo;
+foo();
 function getReimbursementsWithUserID(userId, startdate = undefined, enddate = undefined) {
     return __awaiter(this, void 0, void 0, function* () {
         let result = undefined;

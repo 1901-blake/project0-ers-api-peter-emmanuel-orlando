@@ -1,6 +1,7 @@
 import { talkToDB, endDBConnection} from "./dbGoBetween";
 import { Reimbursement } from "../models/Reimbursement";
 import { Pool, QueryResult } from "pg";
+import { promises } from "fs";
 
 export async function getReimbursementsWithStatus( statusId: Number, startdate: string = undefined, enddate: string = undefined): Promise<Reimbursement[]>
 {
@@ -8,17 +9,16 @@ export async function getReimbursementsWithStatus( statusId: Number, startdate: 
     let command = `SELECT * FROM reimbursments WHERE statusId = ${statusId}`;
     if(startdate && enddate) 
         command += `AND startdate >= ${startdate} AND enddate >= ${enddate}`;
-    await talkToDB(command).then((res,) => {result = res.rows;},
-        (reason)=>{let tmp: Promise<QueryResult> = null; return tmp;});
+    var p = await talkToDB(command).then((res,) => {result = res.rows;}, (reason)=>{let tmp: Promise<QueryResult> = null; return tmp;});
     console.log('butts')
-    return result;
+    return [];
 }
 
 export function foo()
 {
-    getReimbursementsWithStatus(0).then((res)=>{console.log(res);}).catch((err)=>{console.log(err)});
+    var g = getReimbursementsWithStatus(0).catch(()=>{return Promise.resolve()});
     console.log('hey');
-    endDBConnection().then(()=>{'hello'});
+    endDBConnection();
 }
 foo();
 
