@@ -40,7 +40,7 @@ export async function talkToDB( sqlCommand: string): Promise<QueryResult>
     let result: QueryResult = undefined;
 
     const client = <PoolClient> (await pool.connect().catch((e)=>{console.log(e);}));
-    if (client.query !== undefined) 
+    if (client && client.query) 
     {
         result = <QueryResult>(await client.query(sqlCommand).catch((e)=>{console.log(e);}));
         client.release();        
