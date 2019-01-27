@@ -1,8 +1,8 @@
-import { checkUserExists } from "./User";
 import { isValidReimbursementStatus } from "./ReimbursementStatus";
 import { isValidReimbursementType } from "./ReimbursementType";
 import { QueryResult } from "pg";
 import { talkToDB } from "../data-access-objects/dbGoBetween";
+import { checkUserExists } from "../data-access-objects/user.dao";
 
 // **Reimbursement**  
 // The Reimbursement model is used to represent a single reimbursement that an employee would submit
@@ -68,7 +68,7 @@ export function isValidReimbursement(obj: any): boolean
         //check resolver is either undefined, null or a real user
         (!obj.resolver || typeof(obj.resolver) === 'undefined' || checkUserExists(obj.resolver)) && //may break where resolver === 0
         //check dateSubmitted is before current date
-        obj.dateSubmitted <= Date.UTC &&
+        (<number>obj.dateSubmitted) <= Date.now() &&
         //check status and type are real
         isValidReimbursementStatus(obj.status) &&
         isValidReimbursementType(obj.type);

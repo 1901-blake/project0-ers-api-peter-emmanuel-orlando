@@ -1,9 +1,10 @@
 import { User } from "../models/User";
 import { talkToDB } from "./dbGoBetween";
+import { QueryResult } from "pg";
 
 export function getAllUsers(callback:(err: Error, result: QueryResult) => void){
     //get all users from database
-    talkToDB( 'select * from users', callback );
+    //talkToDB( 'select * from users');
 }
 
 export function getUserByCredentials (username: string, password: string)

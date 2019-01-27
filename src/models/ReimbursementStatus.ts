@@ -28,7 +28,7 @@ export function isValidReimbursementStatus(statusId: number): boolean
     client.query('SELECT $1::text as name', ['brianc'], (err, res) => {
         if (err) throw err
         console.log(res)
-        client.end()
+        //client.end()
     })
     return result;
 }

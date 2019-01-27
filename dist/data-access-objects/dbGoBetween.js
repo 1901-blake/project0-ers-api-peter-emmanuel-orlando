@@ -31,7 +31,6 @@ function multiTalkToDB(sqlCommand, callback) {
         //console.log(err, res);
         callback(err, res);
     });
-    return () => { pool.end; };
 }
 exports.multiTalkToDB = multiTalkToDB;
 /**
@@ -42,8 +41,11 @@ exports.multiTalkToDB = multiTalkToDB;
 function talkToDB(sqlCommand) {
     return __awaiter(this, void 0, void 0, function* () {
         let result = undefined;
-        const client = yield pool.connect();
-        result = client.query(sqlCommand);
+        const client = (yield pool.connect().catch((e) => { console.log(e); }));
+        if (client && client.query) {
+            result = (yield client.query(sqlCommand).catch((e) => { console.log(e); }));
+            client.release();
+        }
         return result;
     });
 }

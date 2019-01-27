@@ -19,7 +19,7 @@ const pool = new Pool({
  * @param sqlCommand command to be run on the sql database
  * @param callback gives the error and the result
  */
-export function multiTalkToDB( sqlCommand: string, callback:(err: Error, result: QueryResult) => void): ()=>void
+export function multiTalkToDB( sqlCommand: string, callback:(err: Error, result: QueryResult) => void)
 {
     let result: QueryResult = undefined;
 
@@ -27,7 +27,6 @@ export function multiTalkToDB( sqlCommand: string, callback:(err: Error, result:
         //console.log(err, res);
         callback(err, res);
     })
-    return ()=>{pool.end;};
 } 
 
 /**

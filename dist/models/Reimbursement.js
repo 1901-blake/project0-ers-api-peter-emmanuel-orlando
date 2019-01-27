@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = require("./User");
 const ReimbursementStatus_1 = require("./ReimbursementStatus");
 const ReimbursementType_1 = require("./ReimbursementType");
+const user_dao_1 = require("../data-access-objects/user.dao");
 // **Reimbursement**  
 // The Reimbursement model is used to represent a single reimbursement that an employee would submit
 // ```javascript
@@ -48,11 +48,11 @@ function isValidReimbursement(obj) {
         typeof (obj.status) === 'number' && // foreign ey -> ReimbursementStatus, not null
         typeof (obj.type) === 'number'; // foreign key -> ReimbursementType    
     //check author is a real user
-    User_1.checkUserExists(obj.author) &&
+    user_dao_1.checkUserExists(obj.author) &&
         //check resolver is either undefined, null or a real user
-        (!obj.resolver || typeof (obj.resolver) === 'undefined' || User_1.checkUserExists(obj.resolver)) && //may break where resolver === 0
+        (!obj.resolver || typeof (obj.resolver) === 'undefined' || user_dao_1.checkUserExists(obj.resolver)) && //may break where resolver === 0
         //check dateSubmitted is before current date
-        obj.dateSubmitted <= Date.UTC &&
+        obj.dateSubmitted <= Date.now() &&
         //check status and type are real
         ReimbursementStatus_1.isValidReimbursementStatus(obj.status) &&
         ReimbursementType_1.isValidReimbursementType(obj.type);

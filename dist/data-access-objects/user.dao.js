@@ -8,10 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const dbGoBetween_1 = require("./dbGoBetween");
 function getAllUsers(callback) {
     //get all users from database
-    dbGoBetween_1.talkToDB('select * from users', callback);
+    //talkToDB( 'select * from users');
 }
 exports.getAllUsers = getAllUsers;
 function getUserByCredentials(username, password) {
