@@ -58,8 +58,8 @@ export class Reimbursement
         //because the json object returned has all lowercase, 
         //accessing it as a User does not have matching member names
 
-        result = new Reimbursement(0, author.userId, amount, dateSubmitted, dateResolved, description, resolver.userId, status.statusId, type.typeId );
-        console.log(author.userId);
+        result = new Reimbursement(0, author && author.userId, amount, dateSubmitted, dateResolved, description, resolver && resolver.userId, status.statusId, type.typeId );
+        console.log(author && author.userId);
         console.log(resolver);
         return result;        
     }

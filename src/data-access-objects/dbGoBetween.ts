@@ -1,5 +1,4 @@
 import { Pool, Client, PoolClient, QueryResult } from "pg";
-import { application } from "express";
 
 
 const pool = new Pool({
@@ -12,6 +11,18 @@ const pool = new Pool({
   });
 //either this or create a singleton to get the pool
   
+export class Inquiry
+{
+    text: string;
+    values: any[];
+
+    constructor(text: string, values: any[])
+    {
+        this.text = text;
+        this.values = values;
+    }
+}
+
 /**
  * Function to talk to the database when performing multiple queries. 
  * Returns a function that needs to be called to close the connection.
@@ -19,11 +30,11 @@ const pool = new Pool({
  * @param sqlCommand command to be run on the sql database
  * @param callback gives the error and the result
  */
-export function multiTalkToDB( sqlCommand: string, parameterisedVars: any[], callback:(err: Error, result: QueryResult) => void)
+export function multiTalkToDB( query: Inquiry, callback:(err: Error, result: QueryResult) => void)
 {
     let result: QueryResult = undefined;
 
-    pool.query(sqlCommand, parameterisedVars, (err, res) => {
+    pool.query(query, (err, res) => {
         //console.log(err, res);
         callback(err, res);
     });
@@ -34,14 +45,14 @@ export function multiTalkToDB( sqlCommand: string, parameterisedVars: any[], cal
  * Returns a promise that holds the QueryResult from the database
  * @param sqlCommand command to be run on the sql database
  */
-export async function talkToDB( sqlCommand: string, parameterisedVars: any[]): Promise<QueryResult>
+export async function talkToDB( query: Inquiry): Promise<QueryResult>
 {
     let result: QueryResult = undefined;
-    console.log(sqlCommand);
+    console.log(query);
     const client = <PoolClient> (await pool.connect().catch((e)=>{console.log(e);}));
     if (client && client.query) 
     {
-        result = <QueryResult>(await client.query(sqlCommand, parameterisedVars).catch((e)=>{console.log(e);}));
+        result = <QueryResult>(await client.query(query).catch((e)=>{console.log(e);}));
         client.release();        
     } 
     return result;

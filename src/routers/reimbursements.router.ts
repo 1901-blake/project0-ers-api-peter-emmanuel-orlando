@@ -2,7 +2,7 @@ import express from 'express';
 import { User } from '../models/User';
 import { updateWith } from '../utils';
 import { Reimbursement } from '../models/Reimbursement';
-import rDAO from '../data-access-objects/reimbursment.dao'
+import { getReimbursementsWithStatus } from '../data-access-objects/reimbursment.dao';
 
 
 // all routes defined with this router start with '/users'

@@ -1,4 +1,4 @@
-import { talkToDB, endDBConnection} from "./dbGoBetween";
+import { talkToDB, endDBConnection, Inquiry} from "./dbGoBetween";
 import { Reimbursement } from "../models/Reimbursement";
 import { Pool, QueryResult } from "pg";
 import { ReimbursementStatus } from "../models/ReimbursementStatus";
@@ -23,10 +23,16 @@ foo();
 export async function getReimbursementsWithStatus( statusId: Number, startdate: string = undefined, enddate: string = undefined): Promise<Reimbursement[]>
 {
     let result: Reimbursement[] = undefined;
-    let command = `SELECT * FROM reimbursments WHERE statusId = ${statusId}`;
+    let command = `SELECT * FROM reimbursments WHERE statusId = $1`;  
+    let vars: any[] = [statusId];
     if(startdate && enddate) 
-        command += `AND startdate >= ${startdate} AND enddate >= ${enddate}`;
-    let query = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)});
+    {
+        command += `AND startdate >= $2 AND enddate >= $3`;
+        vars[1] = startdate;
+        vars[2] = enddate;
+    }
+    let inquiry = new Inquiry(command, vars);
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
     result = query.rows.map<Reimbursement>((val) =>{return Reimbursement.castCaseInsensitive(val); });
     return result;
@@ -35,10 +41,16 @@ export async function getReimbursementsWithStatus( statusId: Number, startdate: 
 export async function getReimbursementsWithUserID( userId: Number, startdate: string = undefined, enddate: string = undefined): Promise<Reimbursement[]>
 {
     let result: Reimbursement[] = undefined;
-    let command = `SELECT * FROM reimbursments WHERE statusId = ${userId}`;
+    let command = `SELECT * FROM reimbursments WHERE statusId = $1`;  
+    let vars: any[] = [userId];
     if(startdate && enddate) 
-        command += `AND startdate >= ${startdate} AND enddate >= ${enddate}`;
-    let query = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)});
+    {
+        command += `AND startdate >= $2 AND enddate >= $3`;
+        vars[1] = startdate;
+        vars[2] = enddate;
+    }
+    let inquiry = new Inquiry(command, vars);
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
     result = query.rows;
     return result;
@@ -47,8 +59,10 @@ export async function getReimbursementsWithUserID( userId: Number, startdate: st
 export async function getReimbursementbyID( reimbursementId: Number): Promise<Reimbursement>
 {
     let result: Reimbursement = undefined;
-    let command = `SELECT * FROM reimbursments WHERE reimbursementId = ${reimbursementId}`;
-    let query = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)});
+    let command = `SELECT * FROM reimbursments WHERE reimbursementId = $1`; 
+    let vars: any[] = [reimbursementId];
+    let inquiry = new Inquiry(command, vars);
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
     result = query.rows[0];
     return result;
@@ -57,8 +71,10 @@ export async function getReimbursementbyID( reimbursementId: Number): Promise<Re
 export async function getReimbursement( origAuthor: number, submittedOn: number ): Promise<Reimbursement>
 {
     let result: Reimbursement = undefined;
-    let command = `SELECT * FROM reimbursments WHERE author = ${origAuthor} AND dateSubmitted = ${submittedOn}`;
-    let query = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)});
+    let command = `SELECT * FROM reimbursments WHERE author = $1 AND dateSubmitted = $1`;
+    let vars: any[] = [origAuthor, submittedOn];
+    let inquiry = new Inquiry(command, vars);
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
     result = query.rows[0];
     return result;
@@ -76,15 +92,18 @@ export async function sendToDB( reimbursement: Reimbursement)//: Promise<boolean
     //let success = false;
 
     //delete from db where author matches author and timestamp matches timestamp
-    let command = `DELETE FROM reimbursements WHERE author = ${reimbursement.author} AND dateSubmitted = ${reimbursement.dateSubmitted};`;   
-    await talkToDB(command).catch((e)=>{console.log(e)});
+    let command = `DELETE FROM reimbursements WHERE author = $1 AND dateSubmitted = $2;`;  
+    let vars: any[] = [reimbursement.author, reimbursement.dateSubmitted]; 
+    let inquiry = new Inquiry(command, vars);
+    await talkToDB(inquiry).catch((e)=>{console.log(e)});
 
     //insert this reimbursment into db    
     //  DONT FORGET TO CHANGE THE ID COLUMN TO 'DEFAULT'
     command = `INSERT INTO reimbursements ( reimbursementId, author, amount, dateSubmitted, dateResolved, description, resolver, status, "type" )
-        VALUES (DEFAULT, ${reimbursement.author}, ${reimbursement.amount}, ${reimbursement.dateSubmitted}, ${reimbursement.dateResolved}, '${reimbursement.description}', ${(reimbursement.resolver)? reimbursement.resolver : 'NULL'}, ${reimbursement.status}, ${reimbursement.type})
+        VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *;`;
-    await talkToDB(command).catch((e)=>{console.log(e)})
-
+    vars = [reimbursement.author, reimbursement.amount, reimbursement.dateSubmitted, reimbursement.dateResolved, reimbursement.description, (reimbursement.resolver)? reimbursement.resolver : 'NULL', reimbursement.status, reimbursement.type];    
+    inquiry = new Inquiry(command, vars);
+    await talkToDB(inquiry).catch((e)=>{console.log(e)});
     //return success;
 }

@@ -1,5 +1,5 @@
 import { User } from "../models/User";
-import { talkToDB } from "./dbGoBetween";
+import { talkToDB, Inquiry } from "./dbGoBetween";
 import { QueryResult } from "pg";
 import { Role } from "../models/Role";
 
@@ -20,7 +20,8 @@ export async function getAllUsers(): Promise<User[]>
 {
     let result: User[] = undefined;
     let command = `SELECT * FROM "user"`;
-    let query = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)});
+    let inquiry = new Inquiry(command, []);
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
     result = query.rows;
     return result;
@@ -29,11 +30,15 @@ export async function getAllUsers(): Promise<User[]>
 export async function getUserByUsername (username: string): Promise<User>
 {
     let result: User = undefined;
-    let command = `select * from "user" where username = '${username}';`;
-    let query = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)});
+    let command = `select * from "user" where username = $1;`;
+    let vars: any[] = [username];
+    let inquiry = new Inquiry(command, vars);
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
-    console.log(query.rows[0]);
-    result = User.castCaseInsensitive(query.rows[0]);
+    {
+        console.log(query.rows[0]);
+        result = User.castCaseInsensitive(query.rows[0]);
+    }
     return result;
 }
 
@@ -47,8 +52,10 @@ export async function checkUserExists (username: string): Promise<boolean>
 export async function getUserByCredentials (username: string, password: string): Promise<User>
 {
     let result: User = undefined;
-    let command = `select * from "user" where username = '${username}' and password = '${password}'`;
-    let query = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)});
+    let command = `select * from "user" where username = $1 and password = $2`;
+    let vars: any[] = [username, password];
+    let inquiry = new Inquiry(command, vars);
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
     result = query.rows[0];
     return result;
@@ -61,17 +68,19 @@ export async function checkUserCredentialsExists (username: string, password: st
     return result;
 }
 
-/*
+
 export async function getUserById (userId: number): Promise<User>
 {
     let result: User = undefined;
-    let command = `select * from users where userId = ${userId}`;
-    let query = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)});
+    let command = `select * from users where userId = $1`;
+    let vars: any[] = [userId];
+    let inquiry = new Inquiry(command, vars);
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
     result = query.rows[0];
     return result;
 }
-*/
+
 export async function sendToDB (user: User)//: Promise<boolean>
 {     
     //check that this is a valid user  
@@ -79,14 +88,17 @@ export async function sendToDB (user: User)//: Promise<boolean>
     //let success = false;
 
     //delete from db where user matches user and password matches password
-    let command = `DELETE FROM "user" WHERE username = '${user.username}' AND password = '${user.password}';`;   
-    await talkToDB(command).catch((e)=>{console.log(e)});
+    let command = `DELETE FROM "user" WHERE username = '$1' AND password = '$2';`;   
+    let vars: any[] = [user.username, user.password]
+    let inquiry = new Inquiry(command, vars);
+    await talkToDB(inquiry).catch((e)=>{console.log(e)});
 
     //insert this reimbursment into db    
     //  DONT FORGET TO CHANGE THE ID COLUMN TO 'DEFAULT'
     command = `INSERT INTO "user" (userId, username, password, firstName, lastName, email, role )
-        VALUES (DEFAULT, '${user.username}', '${user.password}', '${user.firstName}', '${user.lastName}', '${user.email}', ${user.role.roleId});`;
-    await talkToDB(command).catch((e)=>{console.log(e)})
-
+        VALUES (DEFAULT, '$1', '$2', '$3', '$4', '$5', $6);`;
+    vars = [user.username, user.password, user.firstName, user.lastName, user.email, user.role.roleId ]
+    inquiry = new Inquiry(command, vars);
+    await talkToDB(inquiry).catch((e)=>{console.log(e)});
     //return success;
 }
