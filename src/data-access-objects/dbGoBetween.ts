@@ -1,5 +1,4 @@
 import { Pool, Client, PoolClient, QueryResult } from "pg";
-import { getSuperSecretPassword } from "../superNormalFile.ignored";
 import { application } from "express";
 
 
