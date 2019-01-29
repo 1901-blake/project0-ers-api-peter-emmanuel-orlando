@@ -20,14 +20,14 @@ const pool = new Pool({
  * @param sqlCommand command to be run on the sql database
  * @param callback gives the error and the result
  */
-export function multiTalkToDB( sqlCommand: string, callback:(err: Error, result: QueryResult) => void)
+export function multiTalkToDB( sqlCommand: string, parameterisedVars: any[], callback:(err: Error, result: QueryResult) => void)
 {
     let result: QueryResult = undefined;
 
-    pool.query(sqlCommand, (err, res) => {
+    pool.query(sqlCommand, parameterisedVars, (err, res) => {
         //console.log(err, res);
         callback(err, res);
-    })
+    });
 } 
 
 /**
@@ -35,14 +35,14 @@ export function multiTalkToDB( sqlCommand: string, callback:(err: Error, result:
  * Returns a promise that holds the QueryResult from the database
  * @param sqlCommand command to be run on the sql database
  */
-export async function talkToDB( sqlCommand: string): Promise<QueryResult>
+export async function talkToDB( sqlCommand: string, parameterisedVars: any[]): Promise<QueryResult>
 {
     let result: QueryResult = undefined;
     console.log(sqlCommand);
     const client = <PoolClient> (await pool.connect().catch((e)=>{console.log(e);}));
     if (client && client.query) 
     {
-        result = <QueryResult>(await client.query(sqlCommand).catch((e)=>{console.log(e);}));
+        result = <QueryResult>(await client.query(sqlCommand, parameterisedVars).catch((e)=>{console.log(e);}));
         client.release();        
     } 
     return result;

@@ -10,9 +10,11 @@ export function foo()
     //talkToDB("select * from employee").then((res)=>{console.log(res)});
     //getReimbursementsWithStatus(0).then((res)=>{console.log(res)});
 
-    Reimbursement.factory('harrydave1', 2, 6, null, 'hgf', 'harrydave', ReimbursementStatus.pending, ReimbursementType.Food ).then((res)=>{
+    Reimbursement.factory('harrydave1', 2, 6, 0, 'hgf', 'harrydave', ReimbursementStatus.pending, ReimbursementType.Food ).then((res)=>{
+        console.log(res);
         sendToDB(res);
     }).catch((e)=>{console.log(e);})
+
     console.log('hey');
     //endDBConnection();
 }
@@ -26,7 +28,7 @@ export async function getReimbursementsWithStatus( statusId: Number, startdate: 
         command += `AND startdate >= ${startdate} AND enddate >= ${enddate}`;
     let query = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)});
     if(query && query.rows)
-    result = query.rows;
+    result = query.rows.map<Reimbursement>((val) =>{return Reimbursement.castCaseInsensitive(val); });
     return result;
 }
 
@@ -80,7 +82,8 @@ export async function sendToDB( reimbursement: Reimbursement)//: Promise<boolean
     //insert this reimbursment into db    
     //  DONT FORGET TO CHANGE THE ID COLUMN TO 'DEFAULT'
     command = `INSERT INTO reimbursements ( reimbursementId, author, amount, dateSubmitted, dateResolved, description, resolver, status, "type" )
-        VALUES (DEFAULT, ${reimbursement.author}, ${reimbursement.amount}, ${reimbursement.dateSubmitted}, ${(reimbursement.dateResolved)?reimbursement.dateResolved : 'NULL'}, '${reimbursement.description}', ${(reimbursement.resolver)? reimbursement.resolver : 'NULL'}, ${reimbursement.status}, ${reimbursement.type});`;
+        VALUES (DEFAULT, ${reimbursement.author}, ${reimbursement.amount}, ${reimbursement.dateSubmitted}, ${reimbursement.dateResolved}, '${reimbursement.description}', ${(reimbursement.resolver)? reimbursement.resolver : 'NULL'}, ${reimbursement.status}, ${reimbursement.type})
+        RETURNING *;`;
     await talkToDB(command).catch((e)=>{console.log(e)})
 
     //return success;

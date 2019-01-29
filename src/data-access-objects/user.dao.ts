@@ -33,7 +33,7 @@ export async function getUserByUsername (username: string): Promise<User>
     let query = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)});
     if(query && query.rows)
     console.log(query.rows[0]);
-    result = query.rows[0];
+    result = User.castCaseInsensitive(query.rows[0]);
     return result;
 }
 

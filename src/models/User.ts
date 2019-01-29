@@ -57,5 +57,18 @@ export class User
 
         return result;
     }
-
+    
+    static castCaseInsensitive(objLiteral: any): User
+    {
+        let result: User = new User(undefined, undefined, undefined, undefined, undefined, undefined, undefined);   
+        let literalKeys: string[] =  Object.keys(objLiteral);
+        for (const key in result) {
+            let equivalentKey = literalKeys.find(literalKey => literalKey.toLowerCase() === key.toLowerCase())
+            result[key] = objLiteral[equivalentKey];
+        }        
+        return result;
+    }
+    
 }
+
+console.log(User.castCaseInsensitive({}));

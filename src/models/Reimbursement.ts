@@ -71,8 +71,36 @@ export class Reimbursement
         this.dateSubmitted === other.dateSubmitted;
 
         return result;
+    }    
+    
+    static castCaseInsensitive(objLiteral: any): Reimbursement
+    {
+        let result: Reimbursement = new Reimbursement(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined);   
+        let literalKeys: string[] =  Object.keys(objLiteral);
+        for (const key in result) {
+            let equivalentKey = literalKeys.find(literalKey => literalKey.toLowerCase() === key.toLowerCase())
+            result[key] = objLiteral[equivalentKey];
+        }        
+        return result;
     }
 }
+
+
+/*
+let v = {
+            reimbursementId: 5,
+            author: 6,
+            amount: 2,
+            dateSubmitted: 76,
+            dateResolved: 12,
+            description: "string", 
+            resolver: 183,
+            status: 454545,
+            type: 344
+        }
+console.log(Reimbursement.castCaseInsensitive(v));
+*/    
+
 
 /*
 
