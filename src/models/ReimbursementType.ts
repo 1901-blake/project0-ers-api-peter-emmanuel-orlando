@@ -11,15 +11,18 @@ export class ReimbursementType
     typeId: number; // primary key
     type: string; // not null, unique   
 
-    constructor ( typeId: number, type: string )
+    private constructor ( typeId: number, type: string )
     {
         this.typeId = typeId;// primary key
         this.type = type;// not null, unique      
-    }
-}
+    }    
 
-export function isValidReimbursementType(typeId: number): boolean
-{
-    var result: boolean = false;
-    return result;
+    static readonly lodging = new ReimbursementType(1, 'Lodging');
+    static readonly Travel = new ReimbursementType(2, 'Travel');
+    static readonly Food = new ReimbursementType(3, 'Food');
+    static readonly Other = new ReimbursementType(4, 'Other');
+    
+
+
+
 }

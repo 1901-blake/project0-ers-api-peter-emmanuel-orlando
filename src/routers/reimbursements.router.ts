@@ -1,18 +1,20 @@
 import express from 'express';
-import { Reimbursement , getReimbursementsWithStatus, getReimbursementsWithUserID, addNewReimbursement, getReimbursementbyID, updateReimbursementInDB } from '../models/Reimbursement';
 import { User } from '../models/User';
 import { updateWith } from '../utils';
+import { Reimbursement } from '../models/Reimbursement';
+import rDAO from '../data-access-objects/reimbursment.dao'
+
 
 // all routes defined with this router start with '/users'
 export const reimbursmentsRouter = express.Router();
 export default reimbursmentsRouter;
 
-reimbursmentsRouter.get('/status/:statusId/', (req, res) =>{
+reimbursmentsRouter.get('/status/:statusId/', async (req, res) =>{
     let accessingUser: User = req.session.user;
     if(accessingUser.role.role === 'finance-manager')
     {
         let startEndDate: string[] = getStartEndDateFromURL(req.originalUrl);
-        let reimbursments: Reimbursement[] = getReimbursementsWithStatus(req.params.statusId, startEndDate[0], startEndDate[1]);
+        let reimbursments: Reimbursement[] = <Reimbursement[]>await getReimbursementsWithStatus(req.params.statusId, startEndDate[0], startEndDate[1]).catch((e)=>{console.log(e);});
         res.status(200).json(reimbursments);
     }
     else
@@ -20,19 +22,19 @@ reimbursmentsRouter.get('/status/:statusId/', (req, res) =>{
 });
 
 
-reimbursmentsRouter.get('/author/userId/:userId', (req, res) =>{
+reimbursmentsRouter.get('/author/userId/:userId', async (req, res) =>{
     let accessingUser: User = req.session.user;
     if(accessingUser.role.role === 'finance-manager' || accessingUser.userId === req.params.userId)
     {
         let startEndDate: string[] = getStartEndDateFromURL(req.originalUrl);
-        let reimbursments: Reimbursement[] = getReimbursementsWithUserID(req.params.userId, startEndDate[0], startEndDate[1]);
+        let reimbursments: Reimbursement[] = <Reimbursement[]>await getReimbursementsWithUserID(req.params.userId, startEndDate[0], startEndDate[1]).catch((e)=>{console.log(e);});       
         res.status(200).json(reimbursments);
     }
     else
         res.sendStatus(403);
 });
 
-reimbursmentsRouter.post('', (req, res) =>{
+reimbursmentsRouter.post('', async (req, res) =>{
     let accessingUser: User = req.session.user;
     let newReimbursement: Reimbursement = req.body;
     let statusResult = 201;
@@ -42,7 +44,7 @@ reimbursmentsRouter.post('', (req, res) =>{
         //set objectid to 0 before sending to db  
         newReimbursement.reimbursementId = 0;
         //send to db
-        if(!addNewReimbursement(newReimbursement)) statusResult = 400;
+        await InsertOrUpdateReimbursementInDB(newReimbursement);
     }
     else {statusResult = 403};  
 
@@ -55,7 +57,7 @@ reimbursmentsRouter.patch('', (req, res) =>{
         //get updates
         let updatesToReimbursement: Reimbursement = req.body;
         //fetch current Reimbursement
-        let result: Reimbursement = getReimbursementbyID(updatesToReimbursement.reimbursementId);
+        let result: Reimbursement = getReimbursment(updatesToReimbursement.author, updatesToReimbursement.dateSubmitted);
         //set variaable with status code
         let statusCode = 400;
         //update result with new val if current user is found

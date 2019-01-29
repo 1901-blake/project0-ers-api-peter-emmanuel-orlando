@@ -1,16 +1,20 @@
 import { talkToDB, endDBConnection} from "./dbGoBetween";
-import { Reimbursement, isValidReimbursement } from "../models/Reimbursement";
+import { Reimbursement } from "../models/Reimbursement";
 import { Pool, QueryResult } from "pg";
-
+import { ReimbursementStatus } from "../models/ReimbursementStatus";
+import { ReimbursementType } from "../models/ReimbursementType";
 
 
 export function foo()
 {
     //talkToDB("select * from employee").then((res)=>{console.log(res)});
     //getReimbursementsWithStatus(0).then((res)=>{console.log(res)});
-    InsertOrUpdateReimbursementInDB(new Reimbursement(1, 8, 8, Date.now(), 0, "test", 9, 9, 8))
+
+    Reimbursement.factory('harrydave1', 2, 6, null, 'hgf', 'harrydave', ReimbursementStatus.pending, ReimbursementType.Food ).then((res)=>{
+        sendToDB(res);
+    }).catch((e)=>{console.log(e);})
     console.log('hey');
-    endDBConnection();
+    //endDBConnection();
 }
 foo();
 
@@ -48,48 +52,36 @@ export async function getReimbursementbyID( reimbursementId: Number): Promise<Re
     return result;
 }
 
+export async function getReimbursement( origAuthor: number, submittedOn: number ): Promise<Reimbursement>
+{
+    let result: Reimbursement = undefined;
+    let command = `SELECT * FROM reimbursments WHERE author = ${origAuthor} AND dateSubmitted = ${submittedOn}`;
+    let query = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)});
+    if(query && query.rows)
+    result = query.rows[0];
+    return result;
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+// date submitted should not be changed. this is a timestamp. I can use author and timestamp to check 
+// that two reimbursments reference the same thing 
+export async function sendToDB( reimbursement: Reimbursement)//: Promise<boolean>
+{     
+    //check that this is a valid reimbursment  
+    // TODO
+    //let success = false;
 
-export async function InsertOrUpdateReimbursementInDB( reimbursement: Reimbursement)
-{       
-    let success = <Reimbursement> await getReimbursementbyID(reimbursement.reimbursementId).catch((e)=>{console.log(e)});
-    if(success)
-        await updateReimbursementInDB(reimbursement).catch((e)=>{console.log(e)});
-    else
-        await insertReimbursementInDB(reimbursement).catch((e)=>{console.log(e)});
-}
+    //delete from db where author matches author and timestamp matches timestamp
+    let command = `DELETE FROM reimbursements WHERE author = ${reimbursement.author} AND dateSubmitted = ${reimbursement.dateSubmitted};`;   
+    await talkToDB(command).catch((e)=>{console.log(e)});
 
-async function insertReimbursementInDB( reimbursement: Reimbursement)
-{
-    if(true)//todo: isValidReimbursement(reimbursement))
-    { 
-        //must set reimbursment id to 0 so it doesnt collide with anything in the database
-        reimbursement.reimbursementId = 0; 
-        let command = `INSERT INTO reimbursements( reimbursementId, author, amount, dateSubmitted, dateResolved, description, resolver, status, "type" )
-        VALUES (${reimbursement.reimbursementId}, ${reimbursement.author}, ${reimbursement.amount}, ${reimbursement.dateSubmitted}, ${reimbursement.dateResolved}, '${reimbursement.description}', ${reimbursement.resolver}, ${reimbursement.status}, ${reimbursement.type})`;
-        //console.log(command);
-        let result = <QueryResult>await talkToDB(command).catch((e)=>{console.log(e)})
-        if(result)
-        {
-            console.log(result.rows);
-            return result.rows[0];
-        }
-    }
-    else
-    {
-        let errStr = 'reinbursment is not valid. Check that all the fields are properly initialized, especially values that shouldnt be null';
-        return Promise.reject(new Error(errStr));
-    }
-}
+    //insert this reimbursment into db    
+    //  DONT FORGET TO CHANGE THE ID COLUMN TO 'DEFAULT'
+    command = `INSERT INTO reimbursements ( reimbursementId, author, amount, dateSubmitted, dateResolved, description, resolver, status, "type" )
+        VALUES (DEFAULT, ${reimbursement.author}, ${reimbursement.amount}, ${reimbursement.dateSubmitted}, ${(reimbursement.dateResolved)?reimbursement.dateResolved : 'NULL'}, '${reimbursement.description}', ${(reimbursement.resolver)? reimbursement.resolver : 'NULL'}, ${reimbursement.status}, ${reimbursement.type});`;
+    await talkToDB(command).catch((e)=>{console.log(e)})
 
-async function updateReimbursementInDB( reimbursement: Reimbursement)
-{
-    let command =
-    `UPDATE reimbursements
-    SET reimbursementId = ${reimbursement.reimbursementId}, author = ${reimbursement.author}, amount = ${reimbursement.amount}, dateSubmitted = ${reimbursement.dateSubmitted}, dateResolved = ${reimbursement.dateResolved}, description = ${reimbursement.description}, resolver = ${reimbursement.resolver}, status = ${reimbursement.status}, type = ${reimbursement.type}
-    WHERE condition`
-    let b = await talkToDB(command).catch((e)=>{console.log(e)})
-    console.log(b);
+    //return success;
 }

@@ -51,7 +51,7 @@ export class User
 
     credentialsMatch(other: User): boolean
     {
-        var result = this.userId === other.userId &&
+        var result = 
         this.username === other.username &&
         this.password === other.password;
 

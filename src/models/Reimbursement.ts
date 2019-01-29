@@ -1,8 +1,7 @@
-import { isValidReimbursementStatus } from "./ReimbursementStatus";
-import { isValidReimbursementType } from "./ReimbursementType";
-import { QueryResult } from "pg";
-import { talkToDB } from "../data-access-objects/dbGoBetween";
-import { checkUserExists } from "../data-access-objects/user.dao";
+import { ReimbursementStatus } from "./ReimbursementStatus";
+import { ReimbursementType } from "./ReimbursementType";
+import { User } from "./User";
+import { getUserByCredentials, getUserByUsername } from "../data-access-objects/user.dao";
 
 // **Reimbursement**  
 // The Reimbursement model is used to represent a single reimbursement that an employee would submit
@@ -32,7 +31,7 @@ export class Reimbursement
     status: number; // foreign ey -> ReimbursementStatus, not null
     type: number; // foreign key -> ReimbursementType    
 
-    constructor (reimbursementId: number, author: number, amount: number, dateSubmitted: number, dateResolved: number, description: string, resolver: number, status: number, type: number)
+    private constructor (reimbursementId: number, author: number, amount: number, dateSubmitted: number, dateResolved: number, description: string, resolver: number, status: number, type: number)
     {
         this.reimbursementId = reimbursementId; // primary key
         this.author = author;  // foreign key -> User, not null
@@ -44,8 +43,38 @@ export class Reimbursement
         this.status = status; // foreign ey -> ReimbursementStatus, not null
         this.type = type; // foreign key -> ReimbursementType        
     }
+
+    static async factory( authorUsername: string,
+        amount: number, dateSubmitted: number, dateResolved: number, 
+        description: string, resolverUsername: string, status: ReimbursementStatus, type: ReimbursementType): Promise<Reimbursement>
+    {
+        var result: Reimbursement = undefined; 
+
+        //get author user id from authorUserName
+        let author: User = <User>await getUserByUsername(authorUsername).catch((e)=>{console.log(e)});
+        //get resolver user id from resolverUserName
+        let resolver: User = <User>await getUserByUsername(resolverUsername).catch((e)=>{console.log(e)});
+
+        //because the json object returned has all lowercase, 
+        //accessing it as a User does not have matching member names
+
+        result = new Reimbursement(0, author.userId, amount, dateSubmitted, dateResolved, description, resolver.userId, status.statusId, type.typeId );
+        console.log(author.userId);
+        console.log(resolver);
+        return result;        
+    }
+
+    matches(other: Reimbursement): boolean
+    {
+        var result = 
+        this.author === other.author &&
+        this.dateSubmitted === other.dateSubmitted;
+
+        return result;
+    }
 }
 
+/*
 
 export function isValidReimbursement(obj: any): boolean
 {
@@ -64,7 +93,7 @@ export function isValidReimbursement(obj: any): boolean
         typeof(obj.status) === 'number' && // foreign ey -> ReimbursementStatus, not null
         typeof(obj.type) === 'number' // foreign key -> ReimbursementType    
         //check author is a real user
-        checkUserExists(obj.author) &&
+        (obj.author) &&
         //check resolver is either undefined, null or a real user
         (!obj.resolver || typeof(obj.resolver) === 'undefined' || checkUserExists(obj.resolver)) && //may break where resolver === 0
         //check dateSubmitted is before current date
@@ -74,3 +103,5 @@ export function isValidReimbursement(obj: any): boolean
         isValidReimbursementType(obj.type);
     return result;
 }
+
+*/

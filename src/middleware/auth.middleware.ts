@@ -1,5 +1,6 @@
 import express from 'express';
-import { User, getUserById } from '../models/User';
+import { User } from '../models/User';
+import { getUserByCredentials } from '../data-access-objects/user.dao';
 
 // all routes defined with this router start with anything
 export const authMiddleware = express.Router();
@@ -14,18 +15,28 @@ export default authMiddleware;
 authMiddleware.use('', (req, res, next) =>{
     //get the user and get the matching user from the database
     let accessingUser: User = req.session.user;
-    let matchingUser: User = accessingUser && getUserById(accessingUser.userId);
-    //if not logged in, or no exact match was found
-    if(!accessingUser || !matchingUser || !accessingUser.credentialsMatch(matchingUser))
+    let success = !!accessingUser;
+    if(success)
     {
-        //invalidate session
-        req.session.destroy(()=>{});
-        //redirect to login
-        res.redirect('/login');
+        getUserByCredentials(accessingUser.username, accessingUser.password).then(( matchingUser)=>{
+            //if not logged in, or no exact match was found
+            if( matchingUser && accessingUser.credentialsMatch(matchingUser))
+            {
+                req.session.user = matchingUser;
+                next();
+            }
+            else
+                redirectToLogin(req, res);
+        });
     }
     else
-    {
-        req.session.user = matchingUser;
-        next();
-    }
+        redirectToLogin(req, res);
 })
+
+function redirectToLogin(req, res)
+{
+    //invalidate session
+    req.session.destroy(()=>{});
+    //redirect to login
+    res.redirect('/login');
+}

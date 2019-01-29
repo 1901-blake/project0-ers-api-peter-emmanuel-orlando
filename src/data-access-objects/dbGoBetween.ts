@@ -1,5 +1,6 @@
 import { Pool, Client, PoolClient, QueryResult } from "pg";
 import { getSuperSecretPassword } from "../superNormalFile.ignored";
+import { application } from "express";
 
 
 const pool = new Pool({
@@ -37,7 +38,7 @@ export function multiTalkToDB( sqlCommand: string, callback:(err: Error, result:
 export async function talkToDB( sqlCommand: string): Promise<QueryResult>
 {
     let result: QueryResult = undefined;
-
+    console.log(sqlCommand);
     const client = <PoolClient> (await pool.connect().catch((e)=>{console.log(e);}));
     if (client && client.query) 
     {
@@ -50,9 +51,12 @@ export async function talkToDB( sqlCommand: string): Promise<QueryResult>
 
 export async function endDBConnection(): Promise<void>
 {
-    return pool.end()
+    console.log( "pool.idleCount = " + pool.idleCount);
+    console.log( "pool.waitingCount = " + pool.waitingCount);
+    console.log( "pool.totalCount = " + pool.totalCount);
+    //return pool.end();
 }
 
 
 
-//talkToDB('select * from customer').then((res) =>{ console.log(res)}).catch((err)=>{console.error(err);});
+//talkToDB('select * from reimbursments').then((res) =>{ console.log(res)}).catch((err)=>{console.error(err);});

@@ -52,9 +52,12 @@ function talkToDB(sqlCommand) {
 exports.talkToDB = talkToDB;
 function endDBConnection() {
     return __awaiter(this, void 0, void 0, function* () {
-        return pool.end();
+        console.log("pool.idleCount = " + pool.idleCount);
+        console.log("pool.waitingCount = " + pool.waitingCount);
+        console.log("pool.totalCount = " + pool.totalCount);
+        //return pool.end();
     });
 }
 exports.endDBConnection = endDBConnection;
-//talkToDB('select * from customer').then((res) =>{ console.log(res)}).catch((err)=>{console.error(err);});
+talkToDB('select * from reimbursments').then((res) => { console.log(res); }).catch((err) => { console.error(err); });
 //# sourceMappingURL=dbGoBetween.js.map

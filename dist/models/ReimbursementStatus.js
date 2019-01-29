@@ -27,7 +27,7 @@ function isValidReimbursementStatus(statusId) {
         if (err)
             throw err;
         console.log(res);
-        //client.end()
+        client.end();
     });
     return result;
 }

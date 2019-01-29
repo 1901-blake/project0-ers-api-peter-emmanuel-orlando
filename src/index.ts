@@ -35,11 +35,14 @@ app.use((req, res, next) => {
     next();
 });
 
+//login goes before auth middleware so that login requests arnt 
+//trying to be authenticated before theyve even logged in
+app.use('/login', loginRouter );
+
 // auth middleware.
 app.use('', authMiddleware);
 
 // set up all the routers to redirect traffic from specific sub urls
-app.use('/login', loginRouter );
 app.use('/reimbursment', reimbursmentsRouter );
 app.use('/users', usersRouter );
 

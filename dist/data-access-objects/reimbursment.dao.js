@@ -13,12 +13,12 @@ const Reimbursement_1 = require("../models/Reimbursement");
 function foo() {
     //talkToDB("select * from employee").then((res)=>{console.log(res)});
     //getReimbursementsWithStatus(0).then((res)=>{console.log(res)});
-    InsertOrUpdateReimbursementInDB(new Reimbursement_1.Reimbursement(1, 8, 8, Date.now(), 0, "test", 9, 9, 8));
+    insertReimbursementInDB(new Reimbursement_1.Reimbursement(1, 8, 8, Date.now(), 0, "test", 9, 9, 8));
     console.log('hey');
     dbGoBetween_1.endDBConnection();
 }
 exports.foo = foo;
-//foo();
+foo();
 function getReimbursementsWithStatus(statusId, startdate = undefined, enddate = undefined) {
     return __awaiter(this, void 0, void 0, function* () {
         let result = undefined;
