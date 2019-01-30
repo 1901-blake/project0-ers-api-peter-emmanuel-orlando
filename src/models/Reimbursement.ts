@@ -82,6 +82,14 @@ export class Reimbursement
             result[key] = objLiteral[equivalentKey];
         }        
         return result;
+    } 
+    
+    static castArrCaseInsensitive(arrLiteral: any[]): Reimbursement[]
+    {
+        let result: Reimbursement[] = arrLiteral;
+        if(result)        
+            result = arrLiteral.map((val)=>{return(this.castCaseInsensitive(val));})
+        return result;
     }
 }
 

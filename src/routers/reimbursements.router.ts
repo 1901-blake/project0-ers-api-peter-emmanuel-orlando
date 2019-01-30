@@ -2,7 +2,7 @@ import express from 'express';
 import { User } from '../models/User';
 import { updateWith } from '../utils';
 import { Reimbursement } from '../models/Reimbursement';
-import { getReimbursementsWithStatus } from '../data-access-objects/reimbursment.dao';
+import { getReimbursementsWithStatus, getReimbursementsWithUserID, sendToDB, getReimbursement, getReimbursementbyID } from '../data-access-objects/reimbursment.dao';
 
 
 // all routes defined with this router start with '/users'
@@ -44,20 +44,20 @@ reimbursmentsRouter.post('', async (req, res) =>{
         //set objectid to 0 before sending to db  
         newReimbursement.reimbursementId = 0;
         //send to db
-        await InsertOrUpdateReimbursementInDB(newReimbursement);
+        await sendToDB(newReimbursement);
     }
     else {statusResult = 403};  
 
     res.sendStatus(statusResult);
 });
 
-reimbursmentsRouter.patch('', (req, res) =>{
+reimbursmentsRouter.patch('', async (req, res) =>{
     let accessingUser: User = req.session.user;
     if(accessingUser.role.role === 'finance-manager'){
         //get updates
         let updatesToReimbursement: Reimbursement = req.body;
         //fetch current Reimbursement
-        let result: Reimbursement = getReimbursment(updatesToReimbursement.author, updatesToReimbursement.dateSubmitted);
+        let result: Reimbursement = <Reimbursement> await getReimbursementbyID(updatesToReimbursement.reimbursementId).catch((e)=>{console.log(e)});
         //set variaable with status code
         let statusCode = 400;
         //update result with new val if current user is found
@@ -67,7 +67,7 @@ reimbursmentsRouter.patch('', (req, res) =>{
             result = updateWith<Reimbursement>(result, updatesToReimbursement);
         }
         //send result back to db
-        updateReimbursementInDB(result);
+        sendToDB(result);
         //send back response        
         res.status(statusCode).json(result);        
     }

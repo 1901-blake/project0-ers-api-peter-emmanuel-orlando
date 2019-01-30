@@ -52,7 +52,7 @@ export async function getReimbursementsWithUserID( userId: Number, startdate: st
     let inquiry = new Inquiry(command, vars);
     let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
-    result = query.rows;
+        result = Reimbursement.castArrCaseInsensitive(query.rows);
     return result;
 }
 
@@ -64,7 +64,7 @@ export async function getReimbursementbyID( reimbursementId: Number): Promise<Re
     let inquiry = new Inquiry(command, vars);
     let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
-    result = query.rows[0];
+        result = Reimbursement.castCaseInsensitive(query.rows[0] ) ;
     return result;
 }
 
@@ -76,7 +76,7 @@ export async function getReimbursement( origAuthor: number, submittedOn: number 
     let inquiry = new Inquiry(command, vars);
     let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
-    result = query.rows[0];
+        result = Reimbursement.castCaseInsensitive(query.rows[0]) ;
     return result;
 }
 
@@ -85,12 +85,11 @@ export async function getReimbursement( origAuthor: number, submittedOn: number 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // date submitted should not be changed. this is a timestamp. I can use author and timestamp to check 
 // that two reimbursments reference the same thing 
-export async function sendToDB( reimbursement: Reimbursement)//: Promise<boolean>
+export async function sendToDB( reimbursement: Reimbursement): Promise<Reimbursement>
 {     
     //check that this is a valid reimbursment  
     // TODO
     //let success = false;
-
     //delete from db where author matches author and timestamp matches timestamp
     let command = `DELETE FROM reimbursements WHERE author = $1 AND dateSubmitted = $2;`;  
     let vars: any[] = [reimbursement.author, reimbursement.dateSubmitted]; 
@@ -104,6 +103,9 @@ export async function sendToDB( reimbursement: Reimbursement)//: Promise<boolean
         RETURNING *;`;
     vars = [reimbursement.author, reimbursement.amount, reimbursement.dateSubmitted, reimbursement.dateResolved, reimbursement.description, (reimbursement.resolver)? reimbursement.resolver : 'NULL', reimbursement.status, reimbursement.type];    
     inquiry = new Inquiry(command, vars);
-    await talkToDB(inquiry).catch((e)=>{console.log(e)});
-    //return success;
+    
+    let result: any = await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    if(result)
+        result = Reimbursement.castCaseInsensitive(result.rows[0]);
+    return result;
 }

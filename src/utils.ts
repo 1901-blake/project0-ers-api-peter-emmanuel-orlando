@@ -10,6 +10,7 @@ export function updateWith<T>(origObj: T, updateObj: T): T
     return result;
 }
 
+/*
 export function castCaseInsensitive<T>(objLiteral: any, dummyObject:T ): T
 {
     let result: T = dummyObject;
@@ -20,3 +21,4 @@ export function castCaseInsensitive<T>(objLiteral: any, dummyObject:T ): T
     }        
     return result;
 }
+*/

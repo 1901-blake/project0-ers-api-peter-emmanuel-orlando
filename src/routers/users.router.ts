@@ -7,13 +7,11 @@ import { getAllUsers, getUserById } from '../data-access-objects/user.dao';
 export const usersRouter = express.Router();
 export default usersRouter;
 
-usersRouter.get('', (req, res) =>{
+usersRouter.get('', async (req, res) =>{
     let accessingUser: User = req.session.user;
     if(accessingUser.role.role === 'finance-manager'){
-        getAllUsers((err, response) =>
-        {
-            res.status(200).json(response.rows);
-        });
+        let result: User[] = <User[]>await getAllUsers().catch((e)=>{console.trace(); console.log(e);} )
+        res.status(200).json(result);
     }
 });
 

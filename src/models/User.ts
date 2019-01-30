@@ -68,6 +68,14 @@ export class User
         }        
         return result;
     }
+
+    static castArrCaseInsensitive(arrLiteral: any[]): User[]
+    {
+        let result: User[] = arrLiteral;
+        if(result)        
+            result = arrLiteral.map((val)=>{return(this.castCaseInsensitive(val));})
+        return result;
+    }
     
 }
 

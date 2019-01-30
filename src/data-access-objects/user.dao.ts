@@ -23,7 +23,7 @@ export async function getAllUsers(): Promise<User[]>
     let inquiry = new Inquiry(command, []);
     let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
-    result = query.rows;
+    result = User.castArrCaseInsensitive(query.rows);
     return result;
 }
 
@@ -57,7 +57,7 @@ export async function getUserByCredentials (username: string, password: string):
     let inquiry = new Inquiry(command, vars);
     let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
-    result = query.rows[0];
+    result = User.castCaseInsensitive(query.rows[0]);
     return result;
 }
 
@@ -77,7 +77,7 @@ export async function getUserById (userId: number): Promise<User>
     let inquiry = new Inquiry(command, vars);
     let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
     if(query && query.rows)
-    result = query.rows[0];
+        result = User.castCaseInsensitive(query.rows[0]);
     return result;
 }
 
@@ -96,9 +96,13 @@ export async function sendToDB (user: User)//: Promise<boolean>
     //insert this reimbursment into db    
     //  DONT FORGET TO CHANGE THE ID COLUMN TO 'DEFAULT'
     command = `INSERT INTO "user" (userId, username, password, firstName, lastName, email, role )
-        VALUES (DEFAULT, '$1', '$2', '$3', '$4', '$5', $6);`;
+        VALUES (DEFAULT, '$1', '$2', '$3', '$4', '$5', $6)
+        RETURNING *;`;
     vars = [user.username, user.password, user.firstName, user.lastName, user.email, user.role.roleId ]
     inquiry = new Inquiry(command, vars);
-    await talkToDB(inquiry).catch((e)=>{console.log(e)});
-    //return success;
+
+    let result: any = await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    if(result)
+        result = User.castCaseInsensitive(result.rows[0]);
+    return result;
 }
