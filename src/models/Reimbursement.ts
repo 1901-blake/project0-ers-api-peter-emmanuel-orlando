@@ -51,9 +51,9 @@ export class Reimbursement
         var result: Reimbursement = undefined; 
 
         //get author user id from authorUserName
-        let author: User = <User>await getUserByUsername(authorUsername).catch((e)=>{console.log(e)});
+        let author: User = <User>await getUserByUsername(authorUsername).catch((e)=>{console.trace(); console.log(e)});
         //get resolver user id from resolverUserName
-        let resolver: User = <User>await getUserByUsername(resolverUsername).catch((e)=>{console.log(e)});
+        let resolver: User = <User>await getUserByUsername(resolverUsername).catch((e)=>{console.trace(); console.log(e)});
 
         //because the json object returned has all lowercase, 
         //accessing it as a User does not have matching member names

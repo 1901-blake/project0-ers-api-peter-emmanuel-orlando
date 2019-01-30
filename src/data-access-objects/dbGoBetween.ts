@@ -49,10 +49,10 @@ export async function talkToDB( query: Inquiry): Promise<QueryResult>
 {
     let result: QueryResult = undefined;
     console.log(query);
-    const client = <PoolClient> (await pool.connect().catch((e)=>{console.log(e);}));
+    const client = <PoolClient> (await pool.connect().catch((e)=>{console.trace(); console.log(e);}));
     if (client && client.query) 
     {
-        result = <QueryResult>(await client.query(query).catch((e)=>{console.log(e);}));
+        result = <QueryResult>(await client.query(query).catch((e)=>{console.trace(); console.log(e);}));
         client.release();        
     } 
     return result;

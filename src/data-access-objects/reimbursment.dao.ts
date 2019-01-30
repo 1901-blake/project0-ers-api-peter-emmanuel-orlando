@@ -13,7 +13,7 @@ export function foo()
     Reimbursement.factory('harrydave1', 2, 6, 0, 'hgf', 'harrydave', ReimbursementStatus.pending, ReimbursementType.Food ).then((res)=>{
         console.log(res);
         sendToDB(res);
-    }).catch((e)=>{console.log(e);})
+    }).catch((e)=>{console.trace(); console.log(e);})
 
     console.log('hey');
     //endDBConnection();
@@ -32,7 +32,7 @@ export async function getReimbursementsWithStatus( statusId: Number, startdate: 
         vars[2] = enddate;
     }
     let inquiry = new Inquiry(command, vars);
-    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
     if(query && query.rows)
     result = query.rows.map<Reimbursement>((val) =>{return Reimbursement.castCaseInsensitive(val); });
     return result;
@@ -50,7 +50,7 @@ export async function getReimbursementsWithUserID( userId: Number, startdate: st
         vars[2] = enddate;
     }
     let inquiry = new Inquiry(command, vars);
-    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
     if(query && query.rows)
         result = Reimbursement.castArrCaseInsensitive(query.rows);
     return result;
@@ -62,7 +62,7 @@ export async function getReimbursementbyID( reimbursementId: Number): Promise<Re
     let command = `SELECT * FROM reimbursments WHERE reimbursementId = $1`; 
     let vars: any[] = [reimbursementId];
     let inquiry = new Inquiry(command, vars);
-    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
     if(query && query.rows)
         result = Reimbursement.castCaseInsensitive(query.rows[0] ) ;
     return result;
@@ -74,7 +74,7 @@ export async function getReimbursement( origAuthor: number, submittedOn: number 
     let command = `SELECT * FROM reimbursments WHERE author = $1 AND dateSubmitted = $1`;
     let vars: any[] = [origAuthor, submittedOn];
     let inquiry = new Inquiry(command, vars);
-    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
     if(query && query.rows)
         result = Reimbursement.castCaseInsensitive(query.rows[0]) ;
     return result;
@@ -94,7 +94,7 @@ export async function sendToDB( reimbursement: Reimbursement): Promise<Reimburse
     let command = `DELETE FROM reimbursements WHERE author = $1 AND dateSubmitted = $2;`;  
     let vars: any[] = [reimbursement.author, reimbursement.dateSubmitted]; 
     let inquiry = new Inquiry(command, vars);
-    await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
 
     //insert this reimbursment into db    
     //  DONT FORGET TO CHANGE THE ID COLUMN TO 'DEFAULT'
@@ -104,7 +104,7 @@ export async function sendToDB( reimbursement: Reimbursement): Promise<Reimburse
     vars = [reimbursement.author, reimbursement.amount, reimbursement.dateSubmitted, reimbursement.dateResolved, reimbursement.description, (reimbursement.resolver)? reimbursement.resolver : 'NULL', reimbursement.status, reimbursement.type];    
     inquiry = new Inquiry(command, vars);
     
-    let result: any = await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    let result: any = await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
     if(result)
         result = Reimbursement.castCaseInsensitive(result.rows[0]);
     return result;

@@ -21,7 +21,7 @@ export async function getAllUsers(): Promise<User[]>
     let result: User[] = undefined;
     let command = `SELECT * FROM "user"`;
     let inquiry = new Inquiry(command, []);
-    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
     if(query && query.rows)
     result = User.castArrCaseInsensitive(query.rows);
     return result;
@@ -33,7 +33,7 @@ export async function getUserByUsername (username: string): Promise<User>
     let command = `select * from "user" where username = $1;`;
     let vars: any[] = [username];
     let inquiry = new Inquiry(command, vars);
-    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
     if(query && query.rows)
     {
         console.log(query.rows[0]);
@@ -55,7 +55,7 @@ export async function getUserByCredentials (username: string, password: string):
     let command = `select * from "user" where username = $1 and password = $2`;
     let vars: any[] = [username, password];
     let inquiry = new Inquiry(command, vars);
-    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
     if(query && query.rows)
     result = User.castCaseInsensitive(query.rows[0]);
     return result;
@@ -75,7 +75,7 @@ export async function getUserById (userId: number): Promise<User>
     let command = `select * from users where userId = $1`;
     let vars: any[] = [userId];
     let inquiry = new Inquiry(command, vars);
-    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    let query = <QueryResult>await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
     if(query && query.rows)
         result = User.castCaseInsensitive(query.rows[0]);
     return result;
@@ -91,7 +91,7 @@ export async function sendToDB (user: User)//: Promise<boolean>
     let command = `DELETE FROM "user" WHERE username = '$1' AND password = '$2';`;   
     let vars: any[] = [user.username, user.password]
     let inquiry = new Inquiry(command, vars);
-    await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
 
     //insert this reimbursment into db    
     //  DONT FORGET TO CHANGE THE ID COLUMN TO 'DEFAULT'
@@ -101,7 +101,7 @@ export async function sendToDB (user: User)//: Promise<boolean>
     vars = [user.username, user.password, user.firstName, user.lastName, user.email, user.role.roleId ]
     inquiry = new Inquiry(command, vars);
 
-    let result: any = await talkToDB(inquiry).catch((e)=>{console.log(e)});
+    let result: any = await talkToDB(inquiry).catch((e)=>{console.trace(); console.log(e)});
     if(result)
         result = User.castCaseInsensitive(result.rows[0]);
     return result;

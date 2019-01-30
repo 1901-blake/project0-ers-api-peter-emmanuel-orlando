@@ -8,7 +8,7 @@ export default loginRouter;
 
 loginRouter.post('', async (req, res) => {
     //fetch user from databse
-    const fetchedUser: User = <User>await getUserByCredentials(req.body.username, req.body.password).catch((e)=>{console.log(e);});
+    const fetchedUser: User = <User>await getUserByCredentials(req.body.username, req.body.password).catch((e)=>{console.trace(); console.log(e);});
     if (fetchedUser) {
         //handle session here. Attaches the entire user object to it for ease of access        
         req.session.user = fetchedUser;

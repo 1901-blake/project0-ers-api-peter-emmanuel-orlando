@@ -14,7 +14,7 @@ reimbursmentsRouter.get('/status/:statusId/', async (req, res) =>{
     if(accessingUser.role.role === 'finance-manager')
     {
         let startEndDate: string[] = getStartEndDateFromURL(req.originalUrl);
-        let reimbursments: Reimbursement[] = <Reimbursement[]>await getReimbursementsWithStatus(req.params.statusId, startEndDate[0], startEndDate[1]).catch((e)=>{console.log(e);});
+        let reimbursments: Reimbursement[] = <Reimbursement[]>await getReimbursementsWithStatus(req.params.statusId, startEndDate[0], startEndDate[1]).catch((e)=>{console.trace(); console.log(e);});
         res.status(200).json(reimbursments);
     }
     else
@@ -27,7 +27,7 @@ reimbursmentsRouter.get('/author/userId/:userId', async (req, res) =>{
     if(accessingUser.role.role === 'finance-manager' || accessingUser.userId === req.params.userId)
     {
         let startEndDate: string[] = getStartEndDateFromURL(req.originalUrl);
-        let reimbursments: Reimbursement[] = <Reimbursement[]>await getReimbursementsWithUserID(req.params.userId, startEndDate[0], startEndDate[1]).catch((e)=>{console.log(e);});       
+        let reimbursments: Reimbursement[] = <Reimbursement[]>await getReimbursementsWithUserID(req.params.userId, startEndDate[0], startEndDate[1]).catch((e)=>{console.trace(); console.log(e);});       
         res.status(200).json(reimbursments);
     }
     else
@@ -57,7 +57,7 @@ reimbursmentsRouter.patch('', async (req, res) =>{
         //get updates
         let updatesToReimbursement: Reimbursement = req.body;
         //fetch current Reimbursement
-        let result: Reimbursement = <Reimbursement> await getReimbursementbyID(updatesToReimbursement.reimbursementId).catch((e)=>{console.log(e)});
+        let result: Reimbursement = <Reimbursement> await getReimbursementbyID(updatesToReimbursement.reimbursementId).catch((e)=>{console.trace(); console.log(e)});
         //set variaable with status code
         let statusCode = 400;
         //update result with new val if current user is found
