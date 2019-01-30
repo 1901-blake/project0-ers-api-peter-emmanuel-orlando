@@ -29,7 +29,7 @@ app.use((req, res, next) => {
     console.log(`request was made with url: ${req.url} and method ${req.method}`);
     // the next method allows the request to fall through after handling above
     next();
-});
+});////
 
 //login goes before auth middleware so that login requests arnt 
 //trying to be authenticated before theyve even logged in

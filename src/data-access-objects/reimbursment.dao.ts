@@ -1,4 +1,4 @@
-import { talkToDB, endDBConnection, Inquiry} from "./dbGoBetween";
+import { talkToDB, Inquiry} from "./dbGoBetween";
 import { Reimbursement } from "../models/Reimbursement";
 import { Pool, QueryResult } from "pg";
 import { ReimbursementStatus } from "../models/ReimbursementStatus";
@@ -20,6 +20,7 @@ export function foo()
 }
 foo();
 */
+//hello
 
 export async function getReimbursementsWithStatus( statusId: Number, startdate: string = undefined, enddate: string = undefined): Promise<Reimbursement[]>
 {

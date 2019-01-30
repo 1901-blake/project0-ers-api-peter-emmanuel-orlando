@@ -10,6 +10,11 @@ const pool = new Pool({
     port: 5432,
   });
 //either this or create a singleton to get the pool
+
+process.on('exit', (code) => {
+    console.log(`About to exit with code: ${code}`);
+    pool.end();
+  });
   
 export class Inquiry
 {
@@ -58,7 +63,7 @@ export async function talkToDB( query: Inquiry): Promise<QueryResult>
     return result;
 }
 
-
+/*
 export async function endDBConnection(): Promise<void>
 {
     console.log( "pool.idleCount = " + pool.idleCount);
@@ -66,7 +71,7 @@ export async function endDBConnection(): Promise<void>
     console.log( "pool.totalCount = " + pool.totalCount);
     //return pool.end();
 }
-
+*/
 
 
 //talkToDB('select * from reimbursments').then((res) =>{ console.log(res)}).catch((err)=>{console.error(err);});
