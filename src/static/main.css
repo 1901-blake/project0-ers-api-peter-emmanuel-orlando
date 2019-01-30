@@ -18,7 +18,7 @@ html
             display: flex;
             width: 100vw;
             height: 100vh;
-            background-image: linear-gradient(to bottom right, rgb(155, 126, 126), rgb(216, 177, 91));
+            background-image: linear-gradient(to bottom right, rgb(188, 255, 224), rgb(231, 159, 255));
         }
 
         #logoHolder
@@ -27,12 +27,17 @@ html
             margin-left: auto;
             margin-right: auto;
             margin-top: 10%;
-            border:5em;
+            border-radius: 5em 2em;
+            border-width: 2em;
             border-style: solid;
-            border-radius: 5px;
-            border-color: antiquewhite;
+            border-color: white;
             width: 60%;
             height: 50%;
-            background-image: linear-gradient(to bottom right, rgb(155, 126, 126), rgb(216, 177, 91));
+            background-image: linear-gradient(to bottom right, rgb(207, 167, 227), rgb(255, 237, 197));
         
+        }
+
+        #logo
+        {
+            height: 100%;
         }

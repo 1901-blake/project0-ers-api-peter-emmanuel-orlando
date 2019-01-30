@@ -5,6 +5,8 @@ import authMiddleware from "./middleware/auth.middleware";
 import loginRouter from "./routers/login.router";
 import reimbursmentsRouter from "./routers/reimbursements.router";
 import usersRouter from "./routers/users.router";
+import accessControl from "./middleware/accessControl.middleware";
+import path from 'path';
 
 const app = express();
 
@@ -31,12 +33,16 @@ app.use((req, res, next) => {
     next();
 });////
 
+app.use(express.static(path.join(__dirname, 'static')));
+
 //login goes before auth middleware so that login requests arnt 
 //trying to be authenticated before theyve even logged in
 app.use('/login', loginRouter );
 
 // auth middleware.
 app.use('', authMiddleware);
+// access control header setup middleware
+app.use('', accessControl);
 
 // set up all the routers to redirect traffic from specific sub urls
 app.use('/reimbursment', reimbursmentsRouter );
