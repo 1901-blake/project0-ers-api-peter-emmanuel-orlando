@@ -3,6 +3,7 @@ import { talkToDB, Inquiry } from "./dbGoBetween";
 import { QueryResult } from "pg";
 import { Role } from "../models/Role";
 
+/*
 export function foo()
 {
     //talkToDB("select * from employee").then((res)=>{console.log(res)});
@@ -13,7 +14,7 @@ export function foo()
     //endDBConnection();
 }
 foo();
-
+*/
 
 
 export async function getAllUsers(): Promise<User[]>

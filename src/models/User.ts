@@ -79,4 +79,4 @@ export class User
     
 }
 
-console.log(User.castCaseInsensitive({}));
+//console.log(User.castCaseInsensitive({}));

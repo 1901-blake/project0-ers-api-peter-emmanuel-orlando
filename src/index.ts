@@ -5,11 +5,7 @@ import authMiddleware from "./middleware/auth.middleware";
 import loginRouter from "./routers/login.router";
 import reimbursmentsRouter from "./routers/reimbursements.router";
 import usersRouter from "./routers/users.router";
-import path from 'path';
-import { foo } from "./data-access-objects/reimbursment.dao";
 
-foo();
-/*
 const app = express();
 
 //allows use of a file/folder system for direct file retreval

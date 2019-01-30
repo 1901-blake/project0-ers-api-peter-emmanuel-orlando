@@ -15,6 +15,8 @@ export default authMiddleware;
 authMiddleware.use('', (req, res, next) =>{
     //get the user and get the matching user from the database
     let accessingUser: User = req.session.user;
+    console.log("user tried to pass auth");
+    console.log(accessingUser);
     let success = !!accessingUser;
     if(success)
     {

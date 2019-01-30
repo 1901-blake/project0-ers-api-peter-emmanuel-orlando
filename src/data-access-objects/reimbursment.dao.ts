@@ -4,7 +4,7 @@ import { Pool, QueryResult } from "pg";
 import { ReimbursementStatus } from "../models/ReimbursementStatus";
 import { ReimbursementType } from "../models/ReimbursementType";
 
-
+/*
 export function foo()
 {
     //talkToDB("select * from employee").then((res)=>{console.log(res)});
@@ -19,6 +19,7 @@ export function foo()
     //endDBConnection();
 }
 foo();
+*/
 
 export async function getReimbursementsWithStatus( statusId: Number, startdate: string = undefined, enddate: string = undefined): Promise<Reimbursement[]>
 {
