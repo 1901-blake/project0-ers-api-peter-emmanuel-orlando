@@ -63,13 +63,14 @@ export class User
         let result: User = new User(undefined, undefined, undefined, undefined, undefined, undefined, undefined);   
         
         let literalKeys: string[] = [];
-        if(objLiteral)
+        if(objLiteral){
             literalKeys =  Object.keys(objLiteral);
-
-        for (const key in result) {
-            let equivalentKey = literalKeys.find(literalKey => literalKey.toLowerCase() === key.toLowerCase())
-            result[key] = objLiteral[equivalentKey];
-        }        
+            for (const key in result) {
+                let equivalentKey = literalKeys.find(literalKey => literalKey.toLowerCase() === key.toLowerCase())
+                result[key] = objLiteral[equivalentKey];
+            }   
+        }
+                 
         return result;
     }
 

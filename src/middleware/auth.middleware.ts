@@ -12,7 +12,7 @@ export default authMiddleware;
 //      else set the session user to undefined. then fall through
 */
 
-authMiddleware.use('', (req, res, next) =>{
+authMiddleware.use('', async (req, res, next) =>{
     //get the user and get the matching user from the database
     let accessingUser: User = req.session.user;
     console.log("user tried to pass auth");
@@ -20,19 +20,26 @@ authMiddleware.use('', (req, res, next) =>{
     let success = !!accessingUser;
     if(success)
     {
-        getUserByCredentials(accessingUser.username, accessingUser.password).then(( matchingUser)=>{
-            //if not logged in, or no exact match was found
-            if( matchingUser && accessingUser.credentialsMatch(matchingUser))
-            {
-                req.session.user = matchingUser;
-                next();
-            }
-            else
-                redirectToLogin(req, res);
-        });
+        let matchingUser = <User>await getUserByCredentials(accessingUser.username, accessingUser.password).catch((e)=>{console.trace(); console.log(e)});       
+        //if not logged in, or no exact match was found
+        if( matchingUser && accessingUser.credentialsMatch(matchingUser))
+        {
+            console.log("user logged in with");
+            console.log(accessingUser);
+            req.session.user = matchingUser;
+            next();
+        }
+        else
+            success = false;
     }
-    else
-        redirectToLogin(req, res);
+    
+    if(success){
+        next();
+    }
+    else{
+        req.session.destroy(()=>{});
+        res.status(403).send(`<p>You do not have permission to access because you are not logged in</p>`);//redirectToLogin(req, res);
+    }
 })
 
 function redirectToLogin(req, res)
