@@ -33,7 +33,7 @@ app.use((req, res, next) => {
     next();
 });////
 
-app.use(express.static(path.join(__dirname, 'static')));
+//app.use(express.static(path.join(__dirname, 'static')));
 
 //login goes before auth middleware so that login requests arnt 
 //trying to be authenticated before theyve even logged in
