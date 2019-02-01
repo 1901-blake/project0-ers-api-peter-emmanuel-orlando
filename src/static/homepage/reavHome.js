@@ -33,7 +33,13 @@
                 console.log(loginInfo);
             }          
             else
-            {
+            {  
+                let func = ()=>{
+                    middleArea.classList.remove("glow_faliure");
+                    middleArea.removeEventListener("animationend", func)
+                };           
+                middleArea.classList.add("glow_faliure");
+                middleArea.addEventListener("animationend", func); 
                 console.log('cannot login, provided info doesnt pass preliminary checks')
             }
         }
@@ -57,7 +63,28 @@
         {
             isLoggingIn = true;
             let result = false
-            await timeout(2000);
+
+            console.log('attempting to login');
+            console.log(loginInfo);
+            let headers = { 'Accept': 'application/json', 'Content-Type': 'application/json'};
+            let serverRequest = { method: 'post', headers: headers, credentials: 'include', body: JSON.stringify(loginInfo) };
+            let response = await fetch('http://localhost:3000/login', serverRequest).catch((e)=>{console.trace(); console.log(e)});
+            if(response)
+            {
+                //console.log(response);
+                if(response.hasOwnProperty("json"))
+                {
+                    let responseJson = response.json().catch((e)=>{console.trace(); console.log(e)})
+                    console.log(responseJson );
+                }
+                console.log('Redirecting to Reimbursement system')
+                if(response.status >= 200 && response.status < 300)
+                {
+                    result = true;
+                    window.location = "http://localhost:5500/src/static/reimbursement-management/reimbursementManagement.html";
+                }
+            }
+
             isLoggingIn = false;
             return result;
         }

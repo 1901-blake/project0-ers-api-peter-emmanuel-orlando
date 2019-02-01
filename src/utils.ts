@@ -10,6 +10,8 @@ export function updateWith<T>(origObj: T, updateObj: T): T
     return result;
 }
 
+export let traceLog = (o)=>{console.trace(); console.log(o);console.log('\n\n');}
+
 /*
 export function castCaseInsensitive<T>(objLiteral: any, dummyObject:T ): T
 {
