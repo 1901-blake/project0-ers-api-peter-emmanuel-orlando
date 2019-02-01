@@ -10,7 +10,7 @@ import path from 'path';
 
 const app = express();
 //allows use of a file/folder system for direct file retreval
-//app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'static')));
 
 // set up body parser to convert json string to js object
 app.use(bodyParser.json());
