@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Revature</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" media="screen" href="reavHome.css" />
+        <script src="reavHome.js"></script>
+    </head>
+    <body>
+        <div id="all">
+            <div id="middle-area" >
+                <div id="holder-div" >
+                    <img id="logo" src="..\resources\revature-logo.png" />
+                    <p id="label">REVATURE ONLINE REIMBURSMENTS PORTAL</p>
+                    <form id="login" onsubmit="attemptSubmit(event)">
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">USERNAME</span>
+                            </div>
+                            <input id="username-input" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                        </div>
+                            <div class="input-group input-group-lg">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">PASSWORD</span>
+                            </div>
+                            <input id="password-input" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                        </div>
+                        <button class="not-displayed" type="submit">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>        
+    </body>
+    <!-- bootstrap script files -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script>
+
+        let isLoggingIn = false;
+        let usernameInput = document.getElementById('username-input');
+        let passwordInput = document.getElementById('password-input');
+        let middleArea = document.getElementById('middle-area');
+        
+        function attemptSubmit(event)
+        {
+            event.preventDefault();  
+            let loginInfo = getLoginInfo();
+            if(loginInfo)
+            {
+                //disable input
+                usernameInput.disabled = true;
+                passwordInput.disabled = true;
+                middleArea.classList.add("glow_pending");
+                login(loginInfo).then((success)=>{
+                    if(!success){
+                        usernameInput.disabled = false;
+                        usernameInput.focus();
+                        usernameInput.select();
+                        middleArea.classList.remove("glow_pending");
+                        middleArea.classList.add("glow_faliure");
+                        timeout(2000).then(()=>{
+                            middleArea.classList.remove("glow_faliure");
+                        });
+
+                        passwordInput.disabled = false;
+                    }
+                })
+                //login.then(){if not logged in successfully, reinable input}
+                console.log('tried to log in with')
+                console.log(loginInfo);
+            }          
+            else
+            {
+                console.log('cannot login, provided info doesnt pass preliminary checks')
+            }
+        }
+
+        function getLoginInfo()
+        {
+            let usernameInput = document.getElementById('username-input');
+            let passwordInput = document.getElementById('password-input');
+
+            let usernameVal = usernameInput && usernameInput.value;
+            let passwordVal = passwordInput && passwordInput.value;
+            // further preliminary checks to decrease server requests
+            let result;
+            if(usernameVal && passwordVal) 
+                result = {"username" : usernameInput.value, "password" : passwordInput.value}
+            //console.log(result);
+            return result;
+        }
+
+        async function login(loginInfo)
+        {
+            isLoggingIn = true;
+            let result = false
+            await timeout(2000);
+            isLoggingIn = false;
+            return result;
+        }
+
+        async function timeout(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+
+
+</html>
+
+
+<ul class="nav justify-content-end">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Active</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
