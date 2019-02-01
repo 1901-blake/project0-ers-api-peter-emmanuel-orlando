@@ -21,7 +21,7 @@
                     </ul>
                 </div>
             </div> 
-            <div id="table" >  
+            <div id="table-holder" >  
             <!--
                 //  reimbursementId: number, // primary key
                 // 	author: number,  // foreign key -> User, not null
@@ -33,10 +33,10 @@
                 //   status: number, // foreign ey -> ReimbursementStatus, not null
                 //   type: number
             -->
-                <table class="table table-hover table-dark">
+                <table class="reimbursement-table table-hover table-sm">
                     <thead>
                         <tr>
-                            <th colspan="5">CURRENT REIMBURSEMENTS</th>
+                            <th colspan="6">CURRENT REIMBURSEMENTS</th>
                         </tr>
                         <tr>
                             <th scope="col">#</th>
@@ -44,6 +44,7 @@
                             <th scope="col">amount</th>
                             <th scope="col">status</th>
                             <th scope="col">dateSubmitted</th>
+                            <th scope="col">details</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,6 +54,7 @@
                         <td>Otto</td>
                         <td>@mdo</td>
                         <td>@mdo</td>
+                        <td>+</td>
                       </tr>
                       <tr>
                         <th scope="row">2</th>
@@ -60,16 +62,18 @@
                         <td>Thornton</td>
                         <td>@fat</td>
                         <td>@fat</td>
+                        <td>+</td>
                       </tr>
                       <tr>
                         <th scope="row">3</th>
                         <td colspan="2">Larry the Bird</td>
                         <td>@twitter</td>
                         <td>@twitter</td>
+                        <td>+</td>
                       </tr>
                       <tr>
                         <th scope="row">4</th>
-                        <td colspan="4">+ new</td>
+                        <td colspan="5">+ new</td>
                       </tr>
                     </tbody>
                 </table>   
