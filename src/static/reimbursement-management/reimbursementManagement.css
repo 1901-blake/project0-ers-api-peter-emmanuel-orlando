@@ -14,6 +14,7 @@
 {
     height: 100%;
     float:left;
+    padding: .3em;
 }
 
 #nav-items
@@ -26,18 +27,28 @@
     display: flex;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 10%;
+    margin-top: 4%;
     padding: 1em;
-    border-radius: 5em 2em;
-    border-width: 2em;
+    border-radius: 3em .5em;
+    border-width: .5em;
     border-style: solid;
     border-color: rgb(255, 255, 255);
-    width: 60%;
-    height: 50%;;
+    width: 80%;
+    height: 70%;
     background-image: linear-gradient(to bottom right, rgb(207, 167, 227), rgb(255, 237, 197));
 }
 
 .reimbursement-table
 {
+    width:100%;
+}
 
+.small-col
+{
+    width:6%;
+}
+
+.big-col
+{
+    width:22%
 }

@@ -72,9 +72,10 @@
             if(response)
             {
                 //console.log(response);
-                if(response.hasOwnProperty("json"))
+                if("json" in response)
                 {
-                    let responseJson = response.json().catch((e)=>{console.trace(); console.log(e)})
+                    let responseJson = await response.json().catch((e)=>{console.trace(); console.log(e)})
+                    console.log('got a response')
                     console.log(responseJson );
                 }
                 console.log('Redirecting to Reimbursement system')
