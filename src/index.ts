@@ -9,7 +9,6 @@ import accessControl from "./middleware/accessControl.middleware";
 import path from 'path';
 
 const app = express();
-app.get('',(req, res)=>{res.sendFile('src\\static\\homepage\\reavHome.html')})
 //allows use of a file/folder system for direct file retreval
 //app.use(express.static(path.join(__dirname, 'static')));
 
