@@ -16,23 +16,35 @@
                 <div id="nav-items">
                     <ul class="nav justify-content-end"> 
                         <li class="nav-item">
-                            <a class="nav-link" href="#">ADD NEW REIMBURSEMENT</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">UPDATE CURRENT REIMBURSEMENT</a>
-                        </li>              
+                            <a class="nav-link" href="#">Log out</a>
+                        </li>           
                     </ul>
                 </div>
             </div> 
-            <div id="table" >                
+            <div id="table" >  
+            <!--
+                //  reimbursementId: number, // primary key
+                // 	author: number,  // foreign key -> User, not null
+                // 	amount: number,  // not null
+                //   dateSubmitted: number, // not null
+                //   dateResolved: number, // not null
+                //   description: string, // not null
+                //   resolver: number, // foreign key -> User
+                //   status: number, // foreign ey -> ReimbursementStatus, not null
+                //   type: number
+            -->
                 <table class="table table-hover table-dark">
                     <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
-                      </tr>
+                        <tr>
+                            <th colspan="5">CURRENT REIMBURSEMENTS</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">author</th>
+                            <th scope="col">amount</th>
+                            <th scope="col">status</th>
+                            <th scope="col">dateSubmitted</th>
+                        </tr>
                     </thead>
                     <tbody>
                       <tr>
@@ -40,23 +52,24 @@
                         <td>Mark</td>
                         <td>Otto</td>
                         <td>@mdo</td>
+                        <td>@mdo</td>
                       </tr>
                       <tr>
                         <th scope="row">2</th>
                         <td>Jacob</td>
                         <td>Thornton</td>
                         <td>@fat</td>
+                        <td>@fat</td>
                       </tr>
                       <tr>
                         <th scope="row">3</th>
                         <td colspan="2">Larry the Bird</td>
                         <td>@twitter</td>
+                        <td>@twitter</td>
                       </tr>
                       <tr>
                         <th scope="row">4</th>
-                        <td><input type="text" placeholder="My ___ goes here"  /></td>
-                        <td><input type="text" placeholder="My ___ goes here"  /></td>
-                        <td><input type="text" placeholder="My ___ goes here"  /></td>
+                        <td colspan="4">+ new</td>
                       </tr>
                     </tbody>
                 </table>   

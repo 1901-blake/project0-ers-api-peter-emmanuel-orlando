@@ -15,16 +15,17 @@
                 middleArea.classList.add("glow_pending");
                 login(loginInfo).then((success)=>{
                     if(!success){
-                        usernameInput.disabled = false;
-                        usernameInput.focus();
-                        usernameInput.select();
                         middleArea.classList.remove("glow_pending");
-                        middleArea.classList.add("glow_faliure");
-                        timeout(2000).then(()=>{
+                        middleArea.classList.add("glow_faliure");    
+                        let func = ()=>{
+                            passwordInput.disabled = false;
+                            usernameInput.disabled = false;
+                            usernameInput.focus();
+                            usernameInput.select();
                             middleArea.classList.remove("glow_faliure");
-                        });
-
-                        passwordInput.disabled = false;
+                            middleArea.removeEventListener("animationend", func)
+                        };           
+                        middleArea.addEventListener("animationend", func);
                     }
                 })
                 //login.then(){if not logged in successfully, reinable input}

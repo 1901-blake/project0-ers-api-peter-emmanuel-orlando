@@ -31,7 +31,7 @@ html
             border-radius: 5em 2em;
             border-width: 2em;
             border-style: solid;
-            border-color: white;
+            border-color: rgb(33, 37, 41);
             width: 60%;
             height: 50%;
             background-image: linear-gradient(to bottom right, rgb(207, 167, 227), rgb(255, 237, 197));
